@@ -1,0 +1,42 @@
+taxonomy {
+  margin: auto;
+}
+taxonomy {
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
+}
+taxonomy h2 {
+  line-height: 1.5;
+  text-align: center;
+}
+
+taxonomy>.container {
+  min-height: 100%;
+  min-width: 500px;
+  padding: 15px;
+  margin: auto;
+}
+line-render>table {
+  margin: auto;
+}
+
+line-render table tr th {
+  min-width: 55px;
+}
+line-render table tr td {
+  padding: 0px 4px;
+}
+.polygon-render-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.polygon-render-item {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+.polygon-render-item>canvas {
+  margin: auto;
+}

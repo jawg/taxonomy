@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Taxonomy</title>
+  <meta content="Building a map taxonomy chart with style.json." name="Description">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <meta content="Taxonomy" itemprop="name" property="og:title">
+  <meta content="Building a map taxonomy chart with style.json." itemprop="description" property="og:description">
+  <meta content="Taxonomy" property="og:site_name">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+</head>
+
+<body>
+  <taxonomy style-url="../style.json"></taxonomy>
+  <!-- build:js scripts/vendor.js -->
+  <script src="../node_modules/riot/riot+compiler.min.js"></script>
+  <!-- endbuild -->
+  <!-- build:js scripts/tags.js -->
+  <script src="scripts/taxonomy.js"></script>
+  <script src="tags/taxonomy.tag" type="riot/tag"></script>
+  <script src="tags/line-render.tag" type="riot/tag"></script>
+  <script src="tags/polygon-render.tag" type="riot/tag"></script>
+  <!-- endbuild -->
+  <script>
+    riot.mount('*');
+  </script>
+</body>
+
+</html>

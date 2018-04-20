@@ -1,0 +1,15 @@
+{
+  "name": "taxonomy",
+  "version": "0.1.0",
+  "description": "Building a map taxonomy chart with style.json",
+  "keywords": [
+    "Map",
+    "Taxonomy",
+    "Chart"
+  ],
+  "author": "Jawg Maps",
+  "license": "MIT",
+  "devDependencies": {
+    "riot": "^3.9.3"
+  }
+}
