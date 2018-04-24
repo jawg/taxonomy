@@ -1,23 +1,19 @@
 <line-render>
   <h2>{ this.opts.title }</h2>
-  <table if="{ this.lines }">
-    <tr>
-      <th each="{ zoom in window.taxonomy.zooms }">
-        { zoom }
-      </th>
-      <th>
-        id
-      </th>
-    </tr>
-    <tr each={ line in this.lines }>
-      <td each="{ zoom in window.taxonomy.zooms }">
-        <canvas if="{ line[zoom].width !== 0 }" style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)}"></canvas>
-      </td>
-      <td>
+  <div class="line-render-container">
+    <div class="line-render-column" each="{ zoom in window.taxonomy.zooms }">
+    <span>{ zoom }</span>
+      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item">
+      <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)}"></canvas>
+      </div>
+    </div>
+    <div class="line-render-column">
+      <span>id</span>
+      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item">
         { line.id }
-      </td>
-    </tr>
-  </table>
+      </div>
+    </div>
+  </div>
   <script type="text/javascript">
     const self = this;
     this.casing = {};

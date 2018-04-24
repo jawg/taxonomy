@@ -10,6 +10,7 @@
   "author": "Jawg Maps",
   "license": "MIT",
   "devDependencies": {
+    "color-operations-ui": "^1.1.0",
     "riot": "^3.9.3"
   }
 }

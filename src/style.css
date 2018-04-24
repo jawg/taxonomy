@@ -12,31 +12,44 @@ taxonomy h2 {
 taxonomy>.container {
   min-height: 100%;
   min-width: 500px;
-  padding: 15px;
+  padding: 30px;
   margin: auto;
 }
-line-render>table {
-  margin: auto;
+taxonomy .taxonomy-item {
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaecef;
 }
-
-line-render table tr th {
-  min-width: 55px;
-}
-line-render table tr td {
-  padding: 0px 4px;
-}
-.polygon-render-container {
+polygon-render .polygon-render-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-.polygon-render-item {
+polygon-render .polygon-render-item {
   padding: 10px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
-.polygon-render-item>canvas {
+polygon-render .polygon-render-item>canvas {
   margin: auto;
+}
+line-render .line-render-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+line-render .line-render-container span {
+  font-weight: bold;
+}
+line-render .line-render-column {
+  padding: 0px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+line-render .line-render-item {
+  padding: 0px 4px;
+  text-align: left;
+
 }

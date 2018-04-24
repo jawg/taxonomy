@@ -72,7 +72,33 @@ if (typeof window.taxonomy === 'undefined') {
     const t = taxonomy.stops.interpolationFactor(zoom, width.base, stops[index][0], stops[index + 1][0]);
     const outputLower = stops[index][1];
     const outputUpper = stops[index + 1][1];
-    return taxonomy.stops.interpolate.number(outputLower, outputUpper, t);
+    return taxonomy.stops.interpolate.number(outputLower, outputUpper, t).toFixed(2);
+  };
+
+  taxonomy.parseColor = function(layer, color, zoom) {
+    if ((layer.minzoom !== undefined && zoom < layer.minzoom) || layer.maxzoom !== undefined && layer.maxzoom < zoom) {
+      return '#000';
+    } else if (typeof color === 'undefined') {
+      return '#000';
+    } else if (typeof color === 'string') {
+      return color;
+    }
+    const stops = color.stops;
+    if (stops.length === 1 || stops[0][0] >= zoom) {
+      return stops[0][1];
+    } else if (stops[stops.length - 1][0] <= zoom) {
+      return stops[stops.length - 1][1];
+    }
+    const index = taxonomy.stops.findStopLessThanOrEqualTo(stops, zoom);
+    const t = taxonomy.stops.interpolationFactor(zoom, color.base, stops[index][0], stops[index + 1][0]);
+    const typeValueLower = colorConverter.getStringTypeAndValue(stops[index][1]);
+    const typeValueUpper = colorConverter.getStringTypeAndValue(stops[index + 1][1]);
+    const outputLower = typeValueLower.type === 'rgb' ? typeValueLower.value : colorConverter[typeValueLower.type].rgb(typeValueLower.value);
+    const outputUpper = typeValueUpper.type === 'rgb' ? typeValueUpper.value : colorConverter[typeValueUpper.type].rgb(typeValueUpper.value);
+    return colorConverter.rgba.toString([
+      taxonomy.stops.interpolate.number(outputLower[0], outputUpper[0], t),
+      taxonomy.stops.interpolate.number(outputLower[1], outputUpper[1], t),
+      taxonomy.stops.interpolate.number(outputLower[2], outputUpper[2], t), 1]);
   };
 
   taxonomy.renderLine = function(layer) {
@@ -81,7 +107,7 @@ if (typeof window.taxonomy === 'undefined') {
     const res = {};
     res.id = layer.id;
     taxonomy.zooms.forEach(function(zoom) {
-      res[zoom] = { width: taxonomy.parseNumber(layer, paint['line-width'], zoom), color: color };
+      res[zoom] = { width: taxonomy.parseNumber(layer, paint['line-width'], zoom), color: taxonomy.parseColor(layer, color, zoom) };
     });
     return res;
   };
