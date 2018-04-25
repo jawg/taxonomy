@@ -51,11 +51,18 @@ line-render .render-item {
 }
 
 symbol-render .render-item {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
   padding: 0px 15px;
 }
 
 @media print {
   taxonomy .taxonomy-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  taxonomy .render-item>* {
     page-break-inside: avoid;
     break-inside: avoid;
   }

@@ -134,4 +134,34 @@ if (typeof window.taxonomy === 'undefined') {
       'border-top-style:solid;' +
       'border-bottom-style:solid;';
   };
+
+  taxonomy.getFontWeight = function(font) {
+    if (/extra(- )?light/i.test(font)) {
+      return 200;
+    } else if (/light/i.test(font)) {
+      return 300;
+    } else if (/semi(- )?bold/i.test(font)) {
+      return 600
+    } else if (/bold/i.test(font)) {
+      return 700;
+    } else if (/black/i.test(font)) {
+      return 900;
+    }
+    return 400;
+  };
+
+  taxonomy.getFontStyle = function(font) {
+    if (/italic$/i.test(font)) {
+      return 'italic';
+    }
+    return 'normal';
+  };
+
+  taxonomy.getFontFamily = function(font) {
+    const family = font.split(/( black| bold| light| regular| semi[- ]?bold| extra[- ]?light| italic)/i);
+    if (family && family[0]) {
+      return family[0];
+    }
+    return '';
+  };
 }
