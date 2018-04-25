@@ -72,7 +72,7 @@ if (typeof window.taxonomy === 'undefined') {
     const t = taxonomy.stops.interpolationFactor(zoom, width.base, stops[index][0], stops[index + 1][0]);
     const outputLower = stops[index][1];
     const outputUpper = stops[index + 1][1];
-    return taxonomy.stops.interpolate.number(outputLower, outputUpper, t).toFixed(2);
+    return +taxonomy.stops.interpolate.number(outputLower, outputUpper, t).toFixed(2);
   };
 
   taxonomy.parseColor = function(layer, color, zoom) {
@@ -102,12 +102,22 @@ if (typeof window.taxonomy === 'undefined') {
   };
 
   taxonomy.renderLine = function(layer) {
-    const paint = layer.paint;
-    const color = paint['line-color'] || '#000';
+    return taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color']});
+  };
+
+  taxonomy.widthAndColorByZooms = function(layer, props) {
+    const color = props.color || '#000';
+    const width = props.width || 1;
+    const zooms = props.zooms || taxonomy.zooms;
     const res = {};
+    res.maxWidth = 0;
     res.id = layer.id;
-    taxonomy.zooms.forEach(function(zoom) {
-      res[zoom] = { width: taxonomy.parseNumber(layer, paint['line-width'], zoom), color: taxonomy.parseColor(layer, color, zoom) };
+    zooms.forEach(function(zoom) {
+      const parsedWidth = taxonomy.parseNumber(layer, width, zoom);
+      if (parsedWidth > res.maxWidth) {
+        res.maxWidth = parsedWidth;
+      }
+      res[zoom] = { width: parsedWidth, color: taxonomy.parseColor(layer, color, zoom) };
     });
     return res;
   };

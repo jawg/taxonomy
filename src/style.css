@@ -1,9 +1,11 @@
 taxonomy {
   margin: auto;
 }
+
 taxonomy {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
 }
+
 taxonomy h2 {
   line-height: 1.5;
   text-align: center;
@@ -15,10 +17,12 @@ taxonomy>.container {
   padding: 30px;
   margin: auto;
 }
+
 taxonomy .taxonomy-item {
   padding-bottom: 20px;
   border-bottom: 1px solid #eaecef;
 }
+
 polygon-render .polygon-render-container {
   display: flex;
   flex-wrap: wrap;
@@ -31,25 +35,38 @@ polygon-render .polygon-render-item {
   flex-direction: column;
   text-align: center;
 }
+
 polygon-render .polygon-render-item>canvas {
   margin: auto;
 }
-line-render .line-render-container {
+
+line-render .line-render-container, symbol-render .symbol-render-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
-line-render .line-render-container span {
+
+line-render .line-render-container span, symbol-render .symbol-render-container span {
   font-weight: bold;
 }
-line-render .line-render-column {
+
+line-render .line-render-column, symbol-render .symbol-render-column {
   padding: 0px;
   display: flex;
   flex-direction: column;
   text-align: center;
 }
-line-render .line-render-item {
+
+line-render .line-render-item, symbol-render .symbol-render-item {
   padding: 0px 4px;
   text-align: left;
+  display: flex;
+  align-items: center;
+}
 
+symbol-render .symbol-render-item>span {
+  padding: 0px 15px;
+  justify-content: center;
+  text-align: center;
+  font-weight: inherit;
 }

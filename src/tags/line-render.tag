@@ -3,13 +3,13 @@
   <div class="line-render-container">
     <div class="line-render-column" each="{ zoom in window.taxonomy.zooms }">
     <span>{ zoom }</span>
-      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item">
+      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item" style="min-height: { this.getMinHeight(line) }px;">
       <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)}"></canvas>
       </div>
     </div>
     <div class="line-render-column">
       <span>id</span>
-      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item">
+      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item" style="min-height: { this.getMinHeight(line) }px;">
         { line.id }
       </div>
     </div>
@@ -31,5 +31,9 @@
       }
       return taxonomy.renderLine(layer);
     });
+    this.getMinHeight = function(line) {
+      const res = 12 + line.maxWidth + (this.casing[line.id] ? this.casing[line.id].maxWidth : 0);
+      return res > 25 ? res : 25;
+    }
   </script>
 </line-render>
