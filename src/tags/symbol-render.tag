@@ -1,15 +1,15 @@
 <symbol-render>
   <h2>{ this.opts.title }</h2>
-  <div class="symbol-render-container">
-    <div class="symbol-render-column" each="{ zoom in this.opts.zooms }">
-    <span>{ zoom }</span>
-      <div if="{ this.symbols }" each="{ symbol in this.symbols }" class="symbol-render-item" style="min-height: { this.getMinHeight(symbol) }px;">
+  <div class="render-container">
+    <div class="render-column" each="{ zoom in this.opts.zooms }">
+    <span class="render-header">{ zoom }</span>
+      <div if="{ this.symbols }" each="{ symbol in this.symbols }" class="render-item" style="min-height: { this.getMinHeight(symbol) }px;">
       <span style="font-size: { symbol[zoom].width }px; color: { symbol[zoom].color }; { this.casing[symbol.id] && this.casing[symbol.id][zoom] ? 'text-shadow: 0 0 ' + this.casing[symbol.id][zoom].width + 'px ' + this.casing[symbol.id][zoom].color + ';' : ''}">{ symbol.example || symbol.id }</span>
       </div>
     </div>
-    <div class="symbol-render-column">
-      <span>id</span>
-      <div if="{ this.symbols }" each="{ symbol in this.symbols }" class="symbol-render-item" style="min-height: { this.getMinHeight(symbol) }px;">
+    <div class="render-column">
+      <span class="render-header">id</span>
+      <div if="{ this.symbols }" each="{ symbol in this.symbols }" class="render-item" style="min-height: { this.getMinHeight(symbol) }px;">
         { symbol.id }
       </div>
     </div>

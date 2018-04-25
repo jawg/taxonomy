@@ -1,7 +1,7 @@
 <polygon-render>
   <h2>{ this.opts.title }</h2>
-  <div class="polygon-render-container">
-    <div if="{ this.polygons }" each="{ polygon in this.polygons }" class="polygon-render-item">
+  <div class="render-container">
+    <div if="{ this.polygons }" each="{ polygon in this.polygons }" class="render-item">
       <canvas style="width: 100px; height: 100px; background-color: { polygon.color }; { this.casing[polygon.id] ? 'border: ' + this.casing[polygon.id].width + 'px solid ' + this.casing[polygon.id].color + ';' : ''}"></canvas>
       <span>{ polygon.id }</span>
     </div>

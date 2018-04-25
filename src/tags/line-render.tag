@@ -1,15 +1,15 @@
 <line-render>
   <h2>{ this.opts.title }</h2>
-  <div class="line-render-container">
-    <div class="line-render-column" each="{ zoom in window.taxonomy.zooms }">
-    <span>{ zoom }</span>
-      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item" style="min-height: { this.getMinHeight(line) }px;">
+  <div class="render-container">
+    <div class="render-column" each="{ zoom in window.taxonomy.zooms }">
+    <span class="render-header">{ zoom }</span>
+      <div if="{ this.lines }" each="{ line in this.lines }" class="render-item" style="min-height: { this.getMinHeight(line) }px;">
       <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)}"></canvas>
       </div>
     </div>
-    <div class="line-render-column">
-      <span>id</span>
-      <div if="{ this.lines }" each="{ line in this.lines }" class="line-render-item" style="min-height: { this.getMinHeight(line) }px;">
+    <div class="render-column">
+      <span class="render-header">id</span>
+      <div if="{ this.lines }" each="{ line in this.lines }" class="render-item" style="min-height: { this.getMinHeight(line) }px;">
         { line.id }
       </div>
     </div>

@@ -1,8 +1,5 @@
 taxonomy {
   margin: auto;
-}
-
-taxonomy {
   font-family: "Roboto", Helvetica, Arial, sans-serif;
 }
 
@@ -23,50 +20,43 @@ taxonomy .taxonomy-item {
   border-bottom: 1px solid #eaecef;
 }
 
-polygon-render .polygon-render-container {
+taxonomy .render-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
 }
 
-polygon-render .polygon-render-item {
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-}
-
-polygon-render .polygon-render-item>canvas {
-  margin: auto;
-}
-
-line-render .line-render-container, symbol-render .symbol-render-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-line-render .line-render-container span, symbol-render .symbol-render-container span {
-  font-weight: bold;
-}
-
-line-render .line-render-column, symbol-render .symbol-render-column {
+taxonomy .render-column, taxonomy .render-item {
   padding: 0px;
   display: flex;
   flex-direction: column;
-  text-align: center;
-}
-
-line-render .line-render-item, symbol-render .symbol-render-item {
-  padding: 0px 4px;
   text-align: left;
-  display: flex;
-  align-items: center;
 }
 
-symbol-render .symbol-render-item>span {
-  padding: 0px 15px;
-  justify-content: center;
+taxonomy span.render-header {
+  font-weight: bold;
   text-align: center;
-  font-weight: inherit;
+}
+
+line-render .render-item>canvas, polygon-render .render-item>* {
+  margin: auto;
+}
+
+polygon-render .render-item {
+  padding: 10px;
+}
+
+line-render .render-item {
+  padding: 0px 4px;
+}
+
+symbol-render .render-item {
+  padding: 0px 15px;
+}
+
+@media print {
+  taxonomy .taxonomy-item {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
 }
