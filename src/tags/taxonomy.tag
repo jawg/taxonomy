@@ -51,6 +51,7 @@
 
     this.on('updated', function() {
       this.setBackgroundColor();
+      taxonomy.fonts.download();
     });
   </script>
 </taxonomy>

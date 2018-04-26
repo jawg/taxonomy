@@ -22,8 +22,8 @@
     } else if (typeof this.opts.zooms === 'number') {
       this.opts.zooms = [this.opts.zooms];
     }
-    this.parseFont = function(font) {
-      return 'font-style: ' + taxonomy.getFontStyle(font) + '; font-weight: ' + taxonomy.getFontWeight(font) + '; font-family: \'' + taxonomy.getFontFamily(font) + '\';';
+    this.fontPropsToStyle = function(props) {
+      return 'font-style: ' + props.style + '; font-weight: ' + props.weight + '; font-family: \'' + props.family + '\';';
     }
     this.symbols = this.opts.layers.filter(function(layer) {
       return layer.metadata && layer.metadata['taxonomy:group'] === self.opts.group && layer.type == 'symbol';
@@ -33,7 +33,9 @@
       }
       const res = taxonomy.widthAndColorByZooms(layer, { width: layer.layout['text-size'], color: layer.paint['text-color'], zooms: self.opts.zooms});
       res.example = layer.metadata['taxonomy:example'];
-      res.fontStyle = self.parseFont(layer.layout['text-font'][0]);
+      const fontProps = taxonomy.fonts.getProps(layer.layout['text-font'][0])
+      res.fontStyle = self.fontPropsToStyle(fontProps);
+      taxonomy.fonts.add(fontProps);
       return res;
     });
 

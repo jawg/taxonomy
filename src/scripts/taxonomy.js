@@ -135,7 +135,10 @@ if (typeof window.taxonomy === 'undefined') {
       'border-bottom-style:solid;';
   };
 
-  taxonomy.getFontWeight = function(font) {
+  taxonomy.fonts = {};
+  taxonomy.fonts._families = {};
+
+  taxonomy.fonts.getWeight = function(font) {
     if (/extra(- )?light/i.test(font)) {
       return 200;
     } else if (/light/i.test(font)) {
@@ -150,18 +153,46 @@ if (typeof window.taxonomy === 'undefined') {
     return 400;
   };
 
-  taxonomy.getFontStyle = function(font) {
+  taxonomy.fonts.getStyle = function(font) {
     if (/italic$/i.test(font)) {
       return 'italic';
     }
     return 'normal';
   };
 
-  taxonomy.getFontFamily = function(font) {
+  taxonomy.fonts.getFamily = function(font) {
     const family = font.split(/( black| bold| light| regular| semi[- ]?bold| extra[- ]?light| italic)/i);
     if (family && family[0]) {
       return family[0];
     }
     return '';
   };
+
+  taxonomy.fonts.getProps = function(font) {
+    return {
+      family: taxonomy.fonts.getFamily(font),
+      style: taxonomy.fonts.getStyle(font),
+      weight: taxonomy.fonts.getWeight(font)
+    }
+  }
+
+  taxonomy.fonts.add = function(fontProps) {
+    taxonomy.fonts._families[fontProps.family] = taxonomy.fonts._families[fontProps.family] || [];
+    const type = fontProps.weight + (fontProps.style == 'italic' ? 'i' : '');
+    if (taxonomy.fonts._families[fontProps.family].indexOf(type) == -1) {
+      taxonomy.fonts._families[fontProps.family].push(type)
+    }
+  }
+
+  taxonomy.fonts.download = function() {
+    const families = [];
+    for (var i in taxonomy.fonts._families) {
+      families.push(i + ':' + taxonomy.fonts._families[i].join(','));
+    }
+    WebFont.load({
+      google: {
+        families: families
+      }
+    });
+  }
 }

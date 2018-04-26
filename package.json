@@ -11,6 +11,8 @@
   "license": "MIT",
   "devDependencies": {
     "color-operations-ui": "^1.1.0",
-    "riot": "^3.9.3"
-  }
+    "riot": "^3.9.3",
+    "webfontloader": "^1.6.28"
+  },
+  "dependencies": {}
 }
