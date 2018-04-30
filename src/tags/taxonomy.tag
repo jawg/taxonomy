@@ -1,9 +1,9 @@
 <taxonomy>
   <div  if="{ this.style && this.style.metadata }" class="container" ref="container">
     <div class="taxonomy-item" each="{ group in this.style.metadata['taxonomy:groups'] }">
-      <line-render if="{ group.type === 'line' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }"></line-render>
-      <polygon-render if="{ group.type === 'polygon' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zoom="{ group.zoom }"></polygon-render>
-      <symbol-render if="{ group.type === 'symbol' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ group.zooms }"></symbol-render>
+      <line-render if="{ group.type === 'line' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></line-render>
+      <polygon-render if="{ group.type === 'polygon' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></polygon-render>
+      <symbol-render if="{ group.type === 'symbol' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></symbol-render>
     </div>
   </div>
   <script type="text/javascript">

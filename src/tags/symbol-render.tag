@@ -4,7 +4,7 @@
     <div class="render-column" each="{ zoom in this.opts.zooms }">
     <span class="render-header">{ zoom }</span>
       <div if="{ this.symbols }" each="{ symbol in this.symbols }" class="render-item" style="min-height: { this.getMinHeight(symbol) }px;">
-      <span style="font-size: { symbol[zoom].width }px; color: { symbol[zoom].color }; { this.casing[symbol.id] && this.casing[symbol.id][zoom] ? 'text-shadow: 0 0 ' + this.casing[symbol.id][zoom].width + 'px ' + this.casing[symbol.id][zoom].color + ';' : ''} { symbol.fontStyle }">{ symbol.example || symbol.id }</span>
+      <span style="font-size: { symbol[zoom].width }px; color: { symbol[zoom].color }; { this.casing[symbol.id] && this.casing[symbol.id][zoom] ? 'text-shadow: 0 0 ' + this.casing[symbol.id][zoom].width + 'px ' + this.casing[symbol.id][zoom].color + ';' : ''} { symbol.fontStyle } text-transform: { symbol['text-transform'] };">{ symbol.example || symbol.id }</span>
       </div>
     </div>
     <div class="render-column">
@@ -17,11 +17,6 @@
   <script type="text/javascript">
     const self = this;
     this.casing = {};
-    if (typeof this.opts.zooms === 'undefined') {
-      this.opts.zooms = window.taxonomy.zooms;
-    } else if (typeof this.opts.zooms === 'number') {
-      this.opts.zooms = [this.opts.zooms];
-    }
     this.fontPropsToStyle = function(props) {
       return 'font-style: ' + props.style + '; font-weight: ' + props.weight + '; font-family: \'' + props.family + '\';';
     }
@@ -32,6 +27,7 @@
         self.casing[layer.id] = taxonomy.widthAndColorByZooms(layer, { width: layer.paint['text-halo-width'], color: layer.paint['text-halo-color'], zooms: self.opts.zooms})
       }
       const res = taxonomy.widthAndColorByZooms(layer, { width: layer.layout['text-size'], color: layer.paint['text-color'], zooms: self.opts.zooms});
+      res['text-transform'] = layer.layout['text-transform'] || 'none';
       res.example = layer.metadata['taxonomy:example'];
       const fontProps = taxonomy.fonts.getProps(layer.layout['text-font'][0])
       res.fontStyle = self.fontPropsToStyle(fontProps);

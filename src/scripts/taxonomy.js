@@ -1,8 +1,22 @@
 if (typeof window.taxonomy === 'undefined') {
   const taxonomy = window.taxonomy = {};
-  taxonomy.zooms = [];
-  for (var i = 1; i < 20; i++) {
-    taxonomy.zooms.push(i);
+  taxonomy.generateArray = function(min, max) {
+    const res = [];
+    for (var i = min; i < max; i++) {
+      res.push(i);
+    }
+    return res;
+  }
+  taxonomy.zooms = taxonomy.generateArray(1, 20);
+  taxonomy.getZooms = function(zooms) {
+    if (typeof zooms === 'undefined') {
+      return taxonomy.zooms;
+    } else if (typeof zooms === 'number') {
+      return [zooms];
+    } else if (typeof zooms === 'object' && typeof zooms.minzoom === 'number' && typeof zooms.maxzoom === 'number') {
+      return taxonomy.generateArray(zooms.minzoom, zooms.maxzoom);
+    }
+    return zooms;
   }
   taxonomy.stops = {};
   taxonomy.stops.interpolate = {
@@ -47,7 +61,7 @@ if (typeof window.taxonomy === 'undefined') {
 
     if (difference === 0) {
       return 0;
-    } else if (base === 1) {
+    } else if (base === 1 || base === undefined) {
       return progress / difference;
     } else {
       return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
@@ -101,13 +115,14 @@ if (typeof window.taxonomy === 'undefined') {
       taxonomy.stops.interpolate.number(outputLower[2], outputUpper[2], t), 1]);
   };
 
-  taxonomy.renderLine = function(layer) {
-    return taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color']});
+  taxonomy.renderLine = function(layer, zooms) {
+    return taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
   };
 
   taxonomy.widthAndColorByZooms = function(layer, props) {
     const color = props.color || '#000';
     const width = props.width || 1;
+    const opacity = props.opacity;
     const zooms = props.zooms || taxonomy.zooms;
     const res = {};
     res.maxWidth = 0;
@@ -117,7 +132,7 @@ if (typeof window.taxonomy === 'undefined') {
       if (parsedWidth > res.maxWidth) {
         res.maxWidth = parsedWidth;
       }
-      res[zoom] = { width: parsedWidth, color: taxonomy.parseColor(layer, color, zoom) };
+      res[zoom] = { width: parsedWidth, color: taxonomy.parseColor(layer, color, zoom), opacity: taxonomy.parseNumber(layer, opacity, zoom) };
     });
     return res;
   };

@@ -11,12 +11,12 @@ taxonomy h2 {
 taxonomy>.container {
   min-height: 100%;
   min-width: 500px;
-  padding: 30px;
+  padding: 0 30px;
   margin: auto;
 }
 
 taxonomy .taxonomy-item {
-  padding-bottom: 20px;
+  padding: 20px 0;
   border-bottom: 1px solid #eaecef;
 }
 
@@ -50,6 +50,7 @@ line-render .render-item {
   padding: 0px 4px;
 }
 
+line-render .render-item,
 symbol-render .render-item {
   display: flex;
   align-items: center;
