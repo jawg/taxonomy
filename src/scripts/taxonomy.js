@@ -112,7 +112,8 @@ if (typeof window.taxonomy === 'undefined') {
     return colorConverter.rgba.toString([
       taxonomy.stops.interpolate.number(outputLower[0], outputUpper[0], t),
       taxonomy.stops.interpolate.number(outputLower[1], outputUpper[1], t),
-      taxonomy.stops.interpolate.number(outputLower[2], outputUpper[2], t), 1]);
+      taxonomy.stops.interpolate.number(outputLower[2], outputUpper[2], t), 1
+    ]);
   };
 
   taxonomy.renderLine = function(layer, zooms) {
@@ -145,7 +146,7 @@ if (typeof window.taxonomy === 'undefined') {
     return 'border-top-width:' + width + 'px;' +
       'border-bottom-width:' + width + 'px;' +
       'border-top-color:' + casing[zoom].color + ';' +
-      'border-bottom-color:' + casing[zoom].color + ';'+
+      'border-bottom-color:' + casing[zoom].color + ';' +
       'border-top-style:solid;' +
       'border-bottom-style:solid;';
   };
@@ -204,10 +205,16 @@ if (typeof window.taxonomy === 'undefined') {
     for (var i in taxonomy.fonts._families) {
       families.push(i + ':' + taxonomy.fonts._families[i].join(','));
     }
-    WebFont.load({
-      google: {
-        families: families
-      }
-    });
+    if (families.length > 0) {
+      WebFont.load({
+        google: {
+          families: families
+        }
+      });
+    }
   }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    riot.mount('taxonomy');
+  });
 }
