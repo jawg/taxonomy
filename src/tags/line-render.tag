@@ -18,11 +18,11 @@
     const self = this;
     this.casing = {};
     this.lines = this.opts.layers.filter(function(layer) {
-      if (layer.metadata && layer.metadata['taxonomy:group'] === self.opts.group && layer.type == 'line') {
-        if (!layer.metadata['taxonomy:casing']) {
+      if (layer.metadata && layer.metadata['taxonomy:group'] === self.opts.group && (layer.type == 'line' || layer.ref)) {
+        if (!layer.metadata['taxonomy:casing'] && !layer.ref) {
           return true;
         }
-        self.casing[layer.metadata['taxonomy:casing']] = layer;
+        self.casing[layer.metadata['taxonomy:casing'] || layer.ref] = layer;
       }
       return false;
     }).map(function(layer) {
