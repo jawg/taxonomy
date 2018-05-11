@@ -2,6 +2,7 @@
   "version": 8,
   "name": "Taxonomy Example",
   "metadata": {
+    "taxonomy:title": "Jawg map taxonomy chart example",
     "taxonomy:groups": [{
         "id": "admin-boundaries",
         "type": "line",
@@ -93,6 +94,27 @@
       }
     },
     {
+      "id": "road-primary-case",
+      "ref": "road-primary",
+      "metadata": {
+        "taxonomy:group": "roads"
+      },
+      "paint": {
+        "line-width": {
+          "base": 1.5,
+          "stops": [ [ 7, 0.75 ], [ 16, 2 ] ]
+        },
+        "line-opacity": {
+          "stops": [ [ 5, 0 ], [ 10, 1 ] ]
+        },
+        "line-color": "#CCC7C2",
+        "line-gap-width": {
+          "base": 1.5,
+          "stops": [ [ 7, 1], [ 18, 32 ] ]
+        }
+      }
+    },
+    {
       "id": "highway-motorway-casing",
       "type": "line",
       "metadata": {
@@ -114,6 +136,28 @@
         },
         "line-opacity": {
           "stops": [ [ 4, 0 ], [ 5, 1 ] ]
+        }
+      }
+    },
+    {
+      "id": "road-primary",
+      "source": "streets-v1",
+      "source-layer": "road",
+      "type": "line",
+      "metadata": {
+        "taxonomy:group": "roads"
+      },
+      "minzoom": 7,
+      "filter": ["in", "type", "primary"],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-color": "#f4f4f4",
+        "line-width": {
+          "base": 1.5,
+          "stops": [ [ 7, 1 ], [ 18, 32 ] ]
         }
       }
     },

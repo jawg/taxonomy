@@ -1,5 +1,8 @@
 <taxonomy>
-  <div  if="{ this.style && this.style.metadata }" class="container" ref="container">
+  <div if="{ this.style && this.style.metadata }" class="container" ref="container">
+    <div if="{ this.style.metadata['taxonomy:title'] }" class="taxonomy-item">
+      <h1>{ this.style.metadata['taxonomy:title'] }</h1>
+    </div>
     <div class="taxonomy-item" each="{ group in this.style.metadata['taxonomy:groups'] }">
       <line-render if="{ group.type === 'line' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></line-render>
       <polygon-render if="{ group.type === 'polygon' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></polygon-render>
