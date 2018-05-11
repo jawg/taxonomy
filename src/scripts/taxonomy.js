@@ -117,7 +117,14 @@ if (typeof window.taxonomy === 'undefined') {
   };
 
   taxonomy.renderLine = function(layer, zooms) {
-    return taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
+    const line = taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
+    if (layer.paint['line-gap-width']) {
+      const gap = taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-gap-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
+      for (zoom in gap) {
+        line[zoom].width += gap[zoom].width;
+      }
+    }
+    return line;
   };
 
   taxonomy.widthAndColorByZooms = function(layer, props) {
