@@ -28,6 +28,10 @@
         "type": "symbol",
         "title": "Political & Place Labels",
         "zooms": [2, 4, 6, 8, 10, 12, 14, 16]
+      },
+      {
+        "type": "annotation",
+        "content": "<div style='font-size: 12px; text-align: center;'>Annotation for ending</a></div>"
       }
     ]
   },

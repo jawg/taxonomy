@@ -7,7 +7,10 @@
       <line-render if="{ group.type === 'line' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></line-render>
       <polygon-render if="{ group.type === 'polygon' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></polygon-render>
       <symbol-render if="{ group.type === 'symbol' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></symbol-render>
+      <annotation if="{ group.type === 'annotation' }" layers="{this.style.layers}" content="{ group.content }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></annotation>
     </div>
+    <div style='font-size: 12px; text-align: center;'>Powered by <a href='https://www.jawg.io/'>Jawg<span style='color: #2999fd;'>Maps</span></a>.
+      Contribute on <a href='https://github.com/jawg/taxonomy/'>GitHub</a>.
   </div>
   <script type="text/javascript">
     this.fetchStyleURL = function (callback) {
