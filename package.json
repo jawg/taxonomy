@@ -1,6 +1,9 @@
 {
   "name": "taxonomy",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "./node_modules/gulp/bin/gulp.js build"
+  },
   "description": "Building a map taxonomy chart with style.json",
   "keywords": [
     "Map",
@@ -11,7 +14,15 @@
   "license": "MIT",
   "devDependencies": {
     "color-operations-ui": "^1.1.0",
-    "riot": "^3.9.3",
+    "del": "^3.0.0",
+    "gulp": "^4.0.0",
+    "gulp-clean-css": "^3.9.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-riot": "^1.1.4",
+    "gulp-uglify": "^3.0.0",
+    "riot": "^3.10.0",
+    "stream-series": "^0.1.1",
+    "uglify-es": "^3.3.10",
     "webfontloader": "^1.6.28"
   },
   "dependencies": {}

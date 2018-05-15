@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Taxonomy</title>
+  <meta content="Building a map taxonomy chart with style.json." name="Description">
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <meta content="Taxonomy" itemprop="name" property="og:title">
+  <meta content="Building a map taxonomy chart with style.json." itemprop="description" property="og:description">
+  <meta content="Taxonomy" property="og:site_name">
+  <style>
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+  </style>
+  <link rel="stylesheet" type="text/css" href="../dist/style.css">
+</head>
+
+<body>
+  <div id="taxonomy-container"></div>
+</body>
+<script>
+  function getTaxonomyURL() {
+    var search = window.location.search;
+    var param;
+    if (/[&?]url=/.test(search)) {
+      param = search.split(/^\?|&/).find(function(param) {
+        return param && /^url=/.test(param);
+      });
+    }
+    return param ? param.replace(/^url=/, '') : '../example.json';
+  }
+  const tag = document.createElement('taxonomy');
+  tag.setAttribute('style-url', getTaxonomyURL());
+  document.getElementById('taxonomy-container').appendChild(tag);
+</script>
+<script src="../dist/taxonomy-bundle+riot.js"></script>
+
+</html>
