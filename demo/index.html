@@ -29,10 +29,10 @@
     var param;
     if (/[&?]url=/.test(search)) {
       param = search.split(/^\?|&/).find(function(param) {
-        return param && /^url=/.test(param);
+        return param && /^url=.+/.test(param);
       });
     }
-    return param ? window.decodeURIComponent(param.replace(/^url=/, '')) : '../example.json';
+    return param ? window.decodeURIComponent(param.replace(/^url=/, '')) : 'https://tile.jawg.io/jawg-sunny.json?access-token=community';
   }
   const tag = document.createElement('taxonomy');
   tag.setAttribute('style-url', getTaxonomyURL());

@@ -8,6 +8,10 @@ Read the original article [here](https://blog.mapbox.com/map-design-taxonomy-cha
 
 Read the **new** article about this tool [here](https://blog.jawg.io/map-taxonomy-chart-with-jawg-maps/)
 
+## [GitHub Page](https://jawg.github.io/taxonomy/) and [Live Demo](https://jawg.github.io/taxonomy/demo)
+
+![screenshot](https://blog.jawg.io/content/images/2018/05/taxonomy-header.png)
+
 ## Usage
 
 ### Simple page
@@ -72,6 +76,10 @@ You can add your taxonomy chart in your website or blog by using this code in yo
         "type": "symbol",
         "title":"Political & Place Labels",
         "zooms": [2, 4, 6, 8, 10, 12, 14, 16]
+      },
+      {
+        "type": "annotation",
+        "content": "<div style='font-size: 12px; text-align: center;'>Annotation for ending</a></div>"
       }
     ]
   }
