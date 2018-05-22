@@ -13,7 +13,7 @@ Here is the link and what it should look like :
 
 Without style url in the query parameter, it will show our simple example.
 
-<form action="https://jawg.github.io/taxonomy/demo">
+<form action="https://jawg.github.io/taxonomy/demo" target="_blank">
   <input type="text" name="url" placeholder="Style JSON URL" style="color: #24292e; background-color: #fff; border: 1px solid #d1d5da; border-radius: 3px;"> <input type="submit" value="Submit" class="btn">
 </form>
 

@@ -32,7 +32,7 @@
         return param && /^url=/.test(param);
       });
     }
-    return param ? param.replace(/^url=/, '') : '../example.json';
+    return param ? window.decodeURIComponent(param.replace(/^url=/, '')) : '../example.json';
   }
   const tag = document.createElement('taxonomy');
   tag.setAttribute('style-url', getTaxonomyURL());
