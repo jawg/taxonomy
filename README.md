@@ -2,6 +2,12 @@
 
 Map taxonomy chart for mapbox GL styles.
 
+Thanks [Nath Slaughter](https://github.com/natslaughter) @natslaughter for the original article and idea of taxonomy.
+
+Read the original article [here](https://blog.mapbox.com/map-design-taxonomy-chart-ae17b23df019)
+
+Read the **new** article about this tool [here](https://blog.jawg.io/map-taxonomy-chart-with-jawg-maps/)
+
 ## Usage
 
 ### Simple page
