@@ -121,3 +121,9 @@ You can add your taxonomy chart in your website or blog by using this code in yo
 ### Concrete example
 
 See example.json
+
+## Credits
+
+Powered by [JawgMaps](https://www.jawg.io)
+
+Sponsored by [Qwant](https://www.qwant.com/)
