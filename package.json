@@ -1,6 +1,6 @@
 {
   "name": "taxonomy",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "scripts": {
     "build": "./node_modules/gulp/bin/gulp.js build"
   },
@@ -16,11 +16,11 @@
     "color-operations-ui": "^1.1.0",
     "del": "^3.0.0",
     "gulp": "^4.0.0",
-    "gulp-clean-css": "^3.9.4",
+    "gulp-clean-css": "^3.10.0",
     "gulp-concat": "^2.6.1",
     "gulp-riot": "^1.1.4",
-    "gulp-uglify": "^3.0.0",
-    "riot": "^3.10.0",
+    "gulp-uglify": "^3.0.1",
+    "riot": "^3.12.0",
     "stream-series": "^0.1.1",
     "uglify-es": "^3.3.10",
     "webfontloader": "^1.6.28"

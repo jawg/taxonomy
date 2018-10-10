@@ -149,7 +149,7 @@ if (typeof window.taxonomy === 'undefined') {
     if (!casing || !base || !casing[zoom] || !base[zoom]) {
       return '';
     }
-    const width = (casing[zoom].width - base[zoom].width) / 2;
+    const width = Math.max((casing[zoom].width - base[zoom].width) / 2, 0);
     return 'border-top-width:' + width + 'px;' +
       'border-bottom-width:' + width + 'px;' +
       'border-top-color:' + casing[zoom].color + ';' +
