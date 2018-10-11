@@ -1,5 +1,5 @@
 <symbol-render>
-  <h2>{ this.opts.title }</h2>
+  <h2 id="{ this.opts.group }">{ this.opts.title }</h2>
   <div class="render-container">
     <div class="render-column" each="{ zoom in this.opts.zooms }">
     <span class="render-header">{ zoom }</span>

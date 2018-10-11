@@ -222,6 +222,15 @@ if (typeof window.taxonomy === 'undefined') {
   }
 
   window.addEventListener('DOMContentLoaded', function() {
-    riot.mount('taxonomy');
+    const tags = riot.mount('taxonomy');
+    if (tags && tags[0]) {
+      const hash = location && location.hash && location.hash.replace('#', '');
+      tags[0].one('fetched', function() {
+        const hashElt = document.getElementById(hash);
+        if (hashElt) {
+          window.scrollTo({ top: hashElt.offsetTop, behavior: 'smooth'})
+        }
+      });
+    }
   });
 }
