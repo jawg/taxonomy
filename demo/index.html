@@ -32,7 +32,7 @@
         return param && /^url=.+/.test(param);
       });
     }
-    return param ? window.decodeURIComponent(param.replace(/^url=/, '')) : 'https://tile.jawg.io/jawg-sunny.json?access-token=community';
+    return param ? window.decodeURIComponent(param.replace(/^url=/, '')) : 'https://jawg.github.io/taxonomy/example.json';
   }
   const tag = document.createElement('taxonomy');
   tag.setAttribute('style-url', getTaxonomyURL());
