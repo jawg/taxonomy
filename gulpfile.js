@@ -19,7 +19,7 @@ const bundleRiotSrc = [
 ];
 
 const bundle = (sources, destination) => {
-  return merge(gulp.src(sources), gulp.src('src/tags/*.tag').pipe(riot()))
+  return merge(gulp.src(sources), gulp.src('src/tags/*.riot').pipe(riot()))
     .pipe(minifier())
     .pipe(concat(destination))
     .pipe(gulp.dest('dist/'));

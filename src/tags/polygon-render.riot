@@ -9,7 +9,7 @@
   <script type="text/javascript">
     const self = this;
     this.casing = {};
-    this.polygons = this.opts.layers.filter(function (layer) {
+    this.polygons = this.opts.layers.filter(function(layer) {
       if (layer.metadata && layer.metadata['taxonomy:group'] === self.opts.group) {
         if (layer.type == 'fill' && !layer.metadata['taxonomy:casing']) {
           return true;
@@ -18,7 +18,7 @@
         }
       }
       return false;
-    }).map(function (layer) {
+    }).map(function(layer) {
       if (self.casing[layer.id]) {
         self.casing[layer.id] = {
           color: taxonomy.parseColor(layer, self.casing[layer.id].paint['line-color'], self.opts.zooms[0]),
@@ -32,7 +32,11 @@
           id: layer.id
         };
       }
-      return {color: taxonomy.parseColor(layer, layer.paint['fill-color'], self.opts.zooms[0]), id: layer.id, opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], self.opts.zooms[0])};
+      return {
+        color: taxonomy.parseColor(layer, layer.paint['fill-color'], self.opts.zooms[0]),
+        id: layer.id,
+        opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], self.opts.zooms[0])
+      };
     });
   </script>
 </polygon-render>

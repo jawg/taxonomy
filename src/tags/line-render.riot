@@ -2,9 +2,9 @@
   <h2 id="{ this.opts.group }">{ this.opts.title }</h2>
   <div class="render-container">
     <div class="render-column" each="{ zoom in this.opts.zooms }">
-    <span class="render-header">{ zoom }</span>
+      <span class="render-header">{ zoom }</span>
       <div if="{ this.lines }" each="{ line in this.lines }" class="render-item" style="min-height: { this.getMinHeight(line) }px;">
-      <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"></canvas>
+        <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(this.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"></canvas>
       </div>
     </div>
     <div class="render-column">

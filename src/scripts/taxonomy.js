@@ -117,9 +117,19 @@ if (typeof window.taxonomy === 'undefined') {
   };
 
   taxonomy.renderLine = function(layer, zooms) {
-    const line = taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
+    const line = taxonomy.widthAndColorByZooms(layer, {
+      width: layer.paint['line-width'],
+      color: layer.paint['line-color'],
+      zooms: zooms,
+      opacity: layer.paint['line-opacity']
+    });
     if (layer.paint['line-gap-width']) {
-      const gap = taxonomy.widthAndColorByZooms(layer, { width: layer.paint['line-gap-width'], color: layer.paint['line-color'], zooms: zooms, opacity: layer.paint['line-opacity'] });
+      const gap = taxonomy.widthAndColorByZooms(layer, {
+        width: layer.paint['line-gap-width'],
+        color: layer.paint['line-color'],
+        zooms: zooms,
+        opacity: layer.paint['line-opacity']
+      });
       for (zoom in gap) {
         line[zoom].width += gap[zoom].width;
       }
@@ -140,7 +150,11 @@ if (typeof window.taxonomy === 'undefined') {
       if (parsedWidth > res.maxWidth) {
         res.maxWidth = parsedWidth;
       }
-      res[zoom] = { width: parsedWidth, color: taxonomy.parseColor(layer, color, zoom), opacity: taxonomy.parseNumber(layer, opacity, zoom) };
+      res[zoom] = {
+        width: parsedWidth,
+        color: taxonomy.parseColor(layer, color, zoom),
+        opacity: taxonomy.parseNumber(layer, opacity, zoom)
+      };
     });
     return res;
   };
@@ -228,7 +242,10 @@ if (typeof window.taxonomy === 'undefined') {
       tags[0].one('fetched', function() {
         const hashElt = document.getElementById(hash);
         if (hashElt) {
-          window.scrollTo({ top: hashElt.offsetTop, behavior: 'smooth'})
+          window.scrollTo({
+            top: hashElt.offsetTop,
+            behavior: 'smooth'
+          })
         }
       });
     }

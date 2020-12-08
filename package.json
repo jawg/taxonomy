@@ -2,7 +2,11 @@
   "name": "taxonomy",
   "version": "1.1.0",
   "scripts": {
-    "build": "./node_modules/gulp/bin/gulp.js build"
+    "build": "./node_modules/gulp/bin/gulp.js build",
+    "format": "npm run format-html && npm run format-js && npm run format-riot",
+    "format-html": "find src demo -name '*.html' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;",
+    "format-js": "find src -name '*.js' -exec js-beautify --config .jsbeautifyrc -f {} --type js -r \\;",
+    "format-riot": "find src -name '*.riot' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;"
   },
   "description": "Building a map taxonomy chart with style.json",
   "keywords": [
@@ -20,6 +24,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-riot": "^1.1.4",
     "gulp-uglify": "^3.0.1",
+    "js-beautify": "^1.13.0",
     "riot": "^3.12.0",
     "stream-series": "^0.1.1",
     "uglify-es": "^3.3.10",
