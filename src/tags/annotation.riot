@@ -1,5 +1,10 @@
 <annotation>
-  <script type="text/javascript">
-    this.root.innerHTML = this.opts.content;
+  <script>
+    export default {
+      onMounted() {
+        this.root.innerHTML = this.props.content
+        this.update()
+      }
+    }
   </script>
 </annotation>

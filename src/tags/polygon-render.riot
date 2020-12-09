@@ -1,42 +1,50 @@
 <polygon-render>
-  <h2 id="{ this.opts.group }">{ this.opts.title }</h2>
+  <h2 id="{ props.group }">{ props.title }</h2>
   <div class="render-container">
-    <div if="{ this.polygons }" each="{ polygon in this.polygons }" class="render-item">
-      <canvas style="width: 100px; height: 100px; background-color: { polygon.color }; { this.casing[polygon.id] ? 'border: ' + this.casing[polygon.id].width + 'px solid ' + this.casing[polygon.id].color + ';' : ''} opacity: { polygon.opacity };"></canvas>
+    <div if="{ state.polygons }" each="{ polygon in state.polygons }" class="render-item">
+      <canvas style="width: 100px; height: 100px; background-color: { polygon.color }; { state.casing[polygon.id] ? 'border: ' + state.casing[polygon.id].width + 'px solid ' + state.casing[polygon.id].color + ';' : ''} opacity: { polygon.opacity };"></canvas>
       <span>{ polygon.id }</span>
     </div>
   </div>
-  <script type="text/javascript">
-    const self = this;
-    this.casing = {};
-    this.polygons = this.opts.layers.filter(function(layer) {
-      if (layer.metadata && layer.metadata['taxonomy:group'] === self.opts.group) {
-        if (layer.type == 'fill' && !layer.metadata['taxonomy:casing']) {
-          return true;
-        } else if (layer.type == 'line' && layer.metadata['taxonomy:casing']) {
-          self.casing[layer.metadata['taxonomy:casing']] = layer;
-        }
+  <script>
+    import taxonomy from '../scripts/taxonomy.js'
+    export default {
+      state: {
+        casing: {},
+        polygons: []
+      },
+      onMounted() {
+        this.state.polygons = this.props.layers.filter(layer => {
+          if (layer.metadata && layer.metadata['taxonomy:group'] === this.props.group) {
+            if (layer.type == 'fill' && !layer.metadata['taxonomy:casing']) {
+              return true;
+            } else if (layer.type == 'line' && layer.metadata['taxonomy:casing']) {
+              this.state.casing[layer.metadata['taxonomy:casing']] = layer;
+            }
+          }
+          return false;
+        }).map(layer => {
+          if (this.state.casing[layer.id]) {
+            this.state.casing[layer.id] = {
+              color: taxonomy.parseColor(layer, this.state.casing[layer.id].paint['line-color'], this.props.zooms[0]),
+              width: taxonomy.parseNumber(layer, this.state.casing[layer.id].paint['line-width'], this.props.zooms[0]),
+              id: this.state.casing[layer.id].id
+            };
+          } else if (layer.paint['fill-outline-color']) {
+            this.state.casing[layer.id] = {
+              color: taxonomy.parseColor(layer, layer.paint['fill-outline-color'], this.props.zooms[0]),
+              width: 1,
+              id: layer.id
+            };
+          }
+          return {
+            color: taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
+            id: layer.id,
+            opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0])
+          };
+        });
+        this.update()
       }
-      return false;
-    }).map(function(layer) {
-      if (self.casing[layer.id]) {
-        self.casing[layer.id] = {
-          color: taxonomy.parseColor(layer, self.casing[layer.id].paint['line-color'], self.opts.zooms[0]),
-          width: taxonomy.parseNumber(layer, self.casing[layer.id].paint['line-width'], self.opts.zooms[0]),
-          id: self.casing[layer.id].id
-        };
-      } else if (layer.paint['fill-outline-color']) {
-        self.casing[layer.id] = {
-          color: taxonomy.parseColor(layer, layer.paint['fill-outline-color'], self.opts.zooms[0]),
-          width: 1,
-          id: layer.id
-        };
-      }
-      return {
-        color: taxonomy.parseColor(layer, layer.paint['fill-color'], self.opts.zooms[0]),
-        id: layer.id,
-        opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], self.opts.zooms[0])
-      };
-    });
+    }
   </script>
 </polygon-render>
