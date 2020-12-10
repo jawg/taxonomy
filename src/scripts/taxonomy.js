@@ -1,22 +1,8 @@
 import WebFont from 'webfontloader';
 import colorConverter from 'color-operations-ui/src/scripts/color-converter.js';
 
-class Interpolate {
+class Expressions {
   constructor() {}
-  number(a, b, t) {
-    return a * (1 - t) + b * t;
-  }
-  array(from, to, t) {
-    return from.map(function (d, i) {
-      return this.number(d, to[i], t);
-    });
-  }
-}
-
-class Stops {
-  constructor() {
-    this.interpolate = new Interpolate();
-  }
   findStopLessThanOrEqualTo(stops, input) {
     const n = stops.length;
     var lowerIndex = 0;
@@ -49,6 +35,56 @@ class Stops {
       return progress / difference;
     } else {
       return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
+    }
+  }
+  number(a, b, t) {
+    return a * (1 - t) + b * t;
+  }
+  array(from, to, t) {
+    return from.map(function(d, i) {
+      return this.number(d, to[i], t);
+    });
+  }
+  asExpression(exp) {
+    if (Array.isArray(exp)) {
+      return exp
+    }
+    if (!exp.stops) {
+      throw new Error(`${JSON.stringify(exp)} is not a correct expression`)
+    }
+    if (exp.base === 1 || exp.base === undefined) {
+      return ["interpolate", ["linear"],
+        ["zoom"]
+      ].concat(exp.stops.reduce((acc, e) => acc.concat(e), []))
+    }
+    return ["interpolate", ["exponential", exp.base],
+      ["zoom"]
+    ].concat(exp.stops.reduce((acc, e) => acc.concat(e), []))
+  }
+  parseInterpolate(exp, value) {
+    if (!exp || exp[0] !== 'interpolate' || exp.length < 4) {
+      return null
+    }
+
+    const base = exp[1][0] === "exponential" ? exp[1][1] : 1
+    const stops = exp.slice(3).reduce((acc, e, i) => {
+      i % 2 === 0 ? acc.push([e]) : acc[acc.length - 1].push(e)
+      return acc
+    }, []);
+    if (stops.length === 1 || stops[0][0] >= value) {
+      return {
+        value: stops[0][1]
+      };
+    } else if (stops[stops.length - 1][0] <= value) {
+      return {
+        value: stops[stops.length - 1][1]
+      };
+    }
+    const index = this.findStopLessThanOrEqualTo(stops, value);
+    return {
+      lower: stops[index][1],
+      upper: stops[index + 1][1],
+      t: this.interpolationFactor(value, base, stops[index][0], stops[index + 1][0])
     }
   }
 }
@@ -116,7 +152,7 @@ class Fonts {
 class Taxonomy {
   constructor() {
     this.zooms = this.generateArray(1, 20);
-    this.stops = new Stops();
+    this.expressions = new Expressions();
     this.fonts = new Fonts();
   }
   generateArray(min, max) {
@@ -147,17 +183,12 @@ class Taxonomy {
     } else if (typeof width === 'number') {
       return width;
     }
-    const stops = width.stops;
-    if (stops.length === 1 || stops[0][0] >= zoom) {
-      return stops[0][1];
-    } else if (stops[stops.length - 1][0] <= zoom) {
-      return stops[stops.length - 1][1];
+    const expression = this.expressions.asExpression(width)
+    const interpolate = this.expressions.parseInterpolate(expression, zoom)
+    if (interpolate) {
+      if (interpolate.value) return interpolate.value
+      return +this.expressions.number(interpolate.lower, interpolate.upper, interpolate.t).toFixed(2);
     }
-    const index = this.stops.findStopLessThanOrEqualTo(stops, zoom);
-    const t = this.stops.interpolationFactor(zoom, width.base, stops[index][0], stops[index + 1][0]);
-    const outputLower = stops[index][1];
-    const outputUpper = stops[index + 1][1];
-    return +this.stops.interpolate.number(outputLower, outputUpper, t).toFixed(2);
   }
   parseColor(layer, color, zoom) {
     if (
@@ -170,30 +201,27 @@ class Taxonomy {
     } else if (typeof color === 'string') {
       return color;
     }
-    const stops = color.stops;
-    if (stops.length === 1 || stops[0][0] >= zoom) {
-      return stops[0][1];
-    } else if (stops[stops.length - 1][0] <= zoom) {
-      return stops[stops.length - 1][1];
+    const expression = this.expressions.asExpression(color)
+    const interpolate = this.expressions.parseInterpolate(expression, zoom)
+    if (interpolate) {
+      if (interpolate.value) return interpolate.value
+      const typeValueLower = colorConverter.getStringTypeAndValue(interpolate.lower);
+      const typeValueUpper = colorConverter.getStringTypeAndValue(interpolate.upper);
+      const outputLower =
+        typeValueLower.type === 'rgb' ?
+        typeValueLower.value :
+        colorConverter[typeValueLower.type].rgb(typeValueLower.value);
+      const outputUpper =
+        typeValueUpper.type === 'rgb' ?
+        typeValueUpper.value :
+        colorConverter[typeValueUpper.type].rgb(typeValueUpper.value);
+      return colorConverter.rgba.toString([
+        this.expressions.number(outputLower[0], outputUpper[0], interpolate.t),
+        this.expressions.number(outputLower[1], outputUpper[1], interpolate.t),
+        this.expressions.number(outputLower[2], outputUpper[2], interpolate.t),
+        1,
+      ]);
     }
-    const index = this.stops.findStopLessThanOrEqualTo(stops, zoom);
-    const t = this.stops.interpolationFactor(zoom, color.base, stops[index][0], stops[index + 1][0]);
-    const typeValueLower = colorConverter.getStringTypeAndValue(stops[index][1]);
-    const typeValueUpper = colorConverter.getStringTypeAndValue(stops[index + 1][1]);
-    const outputLower =
-      typeValueLower.type === 'rgb'
-        ? typeValueLower.value
-        : colorConverter[typeValueLower.type].rgb(typeValueLower.value);
-    const outputUpper =
-      typeValueUpper.type === 'rgb'
-        ? typeValueUpper.value
-        : colorConverter[typeValueUpper.type].rgb(typeValueUpper.value);
-    return colorConverter.rgba.toString([
-      this.stops.interpolate.number(outputLower[0], outputUpper[0], t),
-      this.stops.interpolate.number(outputLower[1], outputUpper[1], t),
-      this.stops.interpolate.number(outputLower[2], outputUpper[2], t),
-      1,
-    ]);
   }
   renderLine(layer, zooms) {
     const line = this.widthAndColorByZooms(layer, {
@@ -231,7 +259,7 @@ class Taxonomy {
         res.maxWidth = parsedWidth;
       }
       res[zoom] = {
-        width: parsedWidth,
+        width: isNaN(parsedWidth) ? 0 : parsedWidth,
         color: this.parseColor(layer, color, zoom),
         opacity: this.parseNumber(layer, opacity, zoom),
       };
