@@ -84,7 +84,37 @@
           ]
         }
       }
-    },
+    },{
+      "id": "landuse-amenities",
+      "source": "streets-v2",
+      "source-layer": "landuse",
+      "type": "fill",
+      "metadata": {
+        "taxonomy:group": "landcover",
+        "taxonomy:matches": [
+          { "name": "cemetery", "get:class": "cemetery" },
+          { "name": "hospital", "get:class": "hospital" },
+          { "name": "school", "get:class": "school" }
+        ]
+      },
+      "filter": [ "in", "class", "cemetery", "hospital", "school" ],
+      "paint": {
+          "fill-color": [
+              "match",
+              [ "get", "class" ],
+              "cemetery", "#e0e4dd",
+              [ "hospital" ], "#ffddee",
+              [ "school" ], "#f0e8f8",
+              "#f8f4f0"
+          ],
+          "fill-opacity": [
+              "match",
+              [ "get", "class" ],
+              [ "school" ], 0.5,
+              1
+          ]
+      }
+  },
     {
       "id": "water",
       "type": "fill",

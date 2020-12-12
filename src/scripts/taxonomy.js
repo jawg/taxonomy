@@ -87,6 +87,19 @@ class Expressions {
       t: this.interpolationFactor(value, base, stops[index][0], stops[index + 1][0])
     }
   }
+  renderMatch(exp, match) {
+    if (!Array.isArray(exp) || exp[0] !== 'match') {
+      return exp
+    }
+    const input = exp[1].join(':')
+
+    return exp.reduce((acc, e, i) => {
+      if (i >= 2 && i % 2 === 0 && (match[input] == e || (Array.isArray(e) && match[input] == e[0]))) {
+        return exp[i + 1]
+      }
+      return acc;
+    }, exp[exp.length - 1])
+  }
 }
 
 class Fonts {
@@ -244,6 +257,24 @@ class Taxonomy {
       }
     }
     return line;
+  }
+  renderMatches(layer, matches) {
+    return matches.map(match => {
+      let newLayer = {
+        id: layer.id,
+        name: match.name,
+        metadata: layer.metadata,
+        paint: {},
+        layout: {}
+      };
+      Object.keys(layer.paint || {}).forEach(key => {
+        newLayer.paint[key] = this.expressions.renderMatch(layer.paint[key], match)
+      })
+      Object.keys(layer.layout || {}).forEach(key => {
+        newLayer.layout[key] = this.expressions.renderMatch(layer.layout[key], match)
+      })
+      return newLayer
+    })
   }
   widthAndColorByZooms(layer, props) {
     const color = props.color || '#000';

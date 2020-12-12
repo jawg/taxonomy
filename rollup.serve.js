@@ -20,8 +20,12 @@ export default [
       commonjs(),
       babel({ babelHelpers: 'bundled', presets: ['@babel/env'] }),
       css({ raw: false, minified: '.serve/style.css' }),
-      serve({ host: 'localhost', port: 8000, contentBase: '.serve' }),
-      html({ template: () => fs.readFileSync('./demo/index.html').toString().replace(/..\/dist\//g, './') }),
+      serve({ host: 'localhost', port: 8000, contentBase: ['.serve', './'] }),
+      html({ template: () =>
+        fs.readFileSync('./demo/index.html').toString()
+        .replace(/..\/dist\//g, './')
+        .replace('https://jawg.github.io/taxonomy/example.json', './example.json')
+      }),
     ],
   },
 ];

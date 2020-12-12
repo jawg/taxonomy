@@ -23,7 +23,13 @@
             }
           }
           return false;
-        }).map(layer => {
+        }).reduce((acc, layer) => {
+          if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
+            acc.push(layer)
+            return acc
+          }
+          return acc.concat(taxonomy.renderMatches(layer, layer.metadata['taxonomy:matches']));
+        }, []).map(layer => {
           if (this.state.casing[layer.id]) {
             this.state.casing[layer.id] = {
               color: taxonomy.parseColor(layer, this.state.casing[layer.id].paint['line-color'], this.props.zooms[0]),
@@ -39,7 +45,7 @@
           }
           return {
             color: taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
-            id: layer.id,
+            id: layer.name || layer.id,
             opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0])
           };
         });
