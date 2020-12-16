@@ -18,6 +18,11 @@
         }
       },
       {
+          "id": "aeroway",
+          "type": "line",
+          "title": "Aeroways"
+      },
+      {
         "id": "landcover",
         "type": "polygon",
         "title": "Water & Landcover",
@@ -115,6 +120,46 @@
           ]
       }
   },
+  {
+      "id": "aeroway",
+      "source": "streets-v2",
+      "source-layer": "aeroway",
+      "type": "line",
+      "metadata": {
+        "taxonomy:group": "aeroway",
+        "taxonomy:matches": [
+          { "name": "runway", "get:type": "runway" },
+          { "name": "taxiway", "get:type": "taxiway" }
+        ]
+      },
+      "filter": [ "all", [ "==", "$type", "LineString" ], [ "==", "type", "runway" ]],
+      "layout": {
+        "line-join": "miter",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-color": "#c6c4c3",
+        "line-width": [
+          "interpolate",
+          [ "exponential", 1.5 ],
+          [ "zoom" ],
+          9,
+          [
+            "match",
+            [ "get", "type" ],
+            [ "runway"], 1,
+            0.5
+          ],
+          18,
+          [
+            "match",
+            [ "get", "type" ],
+            [ "runway" ], 80,
+            20
+          ]
+        ]
+      }
+    },
     {
       "id": "water",
       "type": "fill",

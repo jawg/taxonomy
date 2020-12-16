@@ -31,7 +31,13 @@
             this.state.casing[layer.metadata['taxonomy:casing'] || layer.ref] = layer;
           }
           return false;
-        }).map(layer => {
+        }).reduce((acc, layer) => {
+          if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
+            acc.push(layer)
+            return acc
+          }
+          return acc.concat(taxonomy.renderMatches(layer, layer.metadata['taxonomy:matches']));
+        }, []).map(layer => {
           if (this.state.casing[layer.id]) {
             this.state.casing[layer.id] = taxonomy.renderLine(this.state.casing[layer.id], this.props.zooms);
           }

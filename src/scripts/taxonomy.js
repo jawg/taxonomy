@@ -88,8 +88,10 @@ class Expressions {
     }
   }
   renderMatch(exp, match) {
-    if (!Array.isArray(exp) || exp[0] !== 'match') {
+    if (!Array.isArray(exp)) {
       return exp
+    } else if (exp[0] !== 'match') {
+      return exp.map(e => this.renderMatch(e, match))
     }
     const input = exp[1].join(':')
 
