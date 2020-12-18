@@ -41,7 +41,9 @@
           if (this.state.casing[layer.id]) {
             this.state.casing[layer.id] = taxonomy.renderLine(this.state.casing[layer.id], this.props.zooms);
           }
-          return taxonomy.renderLine(layer, this.props.zooms);
+          const res = taxonomy.renderLine(layer, this.props.zooms);
+          res.id = layer.name || layer.id;
+          return res;
         });
         this.update()
       },
