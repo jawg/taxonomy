@@ -94,13 +94,36 @@ class Expressions {
       return exp.map(e => this.renderMatch(e, match))
     }
     const input = exp[1].join(':')
-
-    return exp.reduce((acc, e, i) => {
-      if (i >= 2 && i % 2 === 0 && (match[input] == e || (Array.isArray(e) && match[input] == e[0]))) {
+    for (let i = 2; i < exp.length - 2; i = i + 2) {
+      if (match[input] == exp[i] || this.lookup(exp[i]) == match[input]) {
         return exp[i + 1]
       }
-      return acc;
-    }, exp[exp.length - 1])
+    }
+    return exp[exp.length - 1]
+  }
+  lookup(exp, match) {
+    if (!Array.isArray(exp)) {
+      return exp
+    }
+    switch (exp[0]) {
+      case 'at':
+        return this.lookup(exp[2], match)[exp[1]]
+      case 'get':
+      case 'has':
+      case '!has':
+        return match[`${exp[0]}:${exp[1]}`]
+      case 'in':
+        return this.lookup(exp[2], match).indexOf(exp[1]) >= 0
+      case '!in':
+        return this.lookup(exp[2], match).indexOf(exp[1]) < 0
+      case 'index-of':
+        return this.lookup(exp[2], match).indexOf(exp[1])
+      case 'length':
+        return this.lookup(exp[1], match).length
+      case 'slice':
+        return this.lookup(exp[1], match).slice(exp[2], exp[3])
+    }
+    return exp
   }
 }
 
