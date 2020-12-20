@@ -90,16 +90,8 @@ class Expressions {
   renderMatch(exp, match) {
     if (!Array.isArray(exp)) {
       return exp
-    } else if (exp[0] !== 'match') {
-      return exp.map(e => this.renderMatch(e, match))
     }
-    const input = exp[1].join(':')
-    for (let i = 2; i < exp.length - 2; i = i + 2) {
-      if (match[input] == exp[i] || this.lookup(exp[i]) == match[input]) {
-        return exp[i + 1]
-      }
-    }
-    return exp[exp.length - 1]
+    return this.decision(exp.map(e => this.renderMatch(e, match)), match)
   }
   lookup(exp, match) {
     if (!Array.isArray(exp)) {
@@ -124,6 +116,50 @@ class Expressions {
         return this.lookup(exp[1], match).slice(exp[2], exp[3])
     }
     return exp
+  }
+  decision(exp, match) {
+    if (!Array.isArray(exp)) {
+      return exp
+    }
+    switch (exp[0]) {
+      case "!":
+        return !this.lookup(exp[1], match);
+      case "==":
+        return this.lookup(exp[1], match) == exp[2];
+      case "!=":
+        return this.lookup(exp[1], match) != exp[2];
+      case ">":
+        return this.lookup(exp[1], match) > exp[2];
+      case "<":
+        return this.lookup(exp[1], match) < exp[2];
+      case ">=":
+        return this.lookup(exp[1], match) >= exp[2];
+      case "<=":
+        return this.lookup(exp[1], match) <= exp[2];
+      case "all":
+        return exp.slice(1).every(e => this.lookup(e, match) === true);
+      case "some":
+        return exp.slice(1).any(e => this.lookup(e, match) === true);
+      case "match": {
+        for (let i = 2; i < exp.length - 2; i = i + 2) {
+          if (exp[1] == exp[i] || (Array.isArray(exp[i]) && exp[1] == exp[i][0])) {
+            return exp[i + 1]
+          }
+        }
+        return exp[exp.length - 1]
+      }
+      case "case": {
+        for (let i = 1; i < exp.length - 2; i = i + 2) {
+          if (exp[i] === true) {
+            return exp[i + 1]
+          }
+        }
+        return exp[exp.length - 1]
+      }
+      case "coalesce":
+        return exp.slice(1).find(e => e !== null && e !== undefined)
+    }
+    return this.lookup(exp, match)
   }
 }
 
