@@ -24,7 +24,13 @@
       onMounted() {
         this.state.symbols = this.props.layers.filter(layer => {
           return layer.metadata && layer.metadata['taxonomy:group'] === this.props.group && layer.type == 'symbol';
-        }).map(layer => {
+        }).reduce((acc, layer) => {
+          if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
+            acc.push(layer)
+            return acc
+          }
+          return acc.concat(taxonomy.renderMatches(layer, layer.metadata['taxonomy:matches']));
+        }, []).map(layer => {
           if (layer.paint['text-halo-color']) {
             this.state.casing[layer.id] = taxonomy.widthAndColorByZooms(layer, {
               width: layer.paint['text-halo-width'],
@@ -37,6 +43,7 @@
             color: layer.paint['text-color'],
             zooms: this.props.zooms
           });
+          res.id = layer.name || layer.id;
           res['text-transform'] = layer.layout['text-transform'] || 'none';
           res.example = layer.metadata['taxonomy:example'];
           const fontProps = taxonomy.fonts.getProps(layer.layout['text-font'][0])

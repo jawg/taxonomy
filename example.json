@@ -29,6 +29,12 @@
         "zoom": 13
       },
       {
+        "id": "water-label",
+        "type": "symbol",
+        "title": "Marine Labels",
+        "zooms": [2, 4, 6, 8, 10, 12, 14, 16]
+      },
+      {
         "id": "places",
         "type": "symbol",
         "title": "Political & Place Labels",
@@ -91,7 +97,7 @@
       }
     },{
       "id": "landuse-amenities",
-      "source": "streets-v2",
+      "source": "osm",
       "source-layer": "landuse",
       "type": "fill",
       "metadata": {
@@ -122,7 +128,7 @@
   },
   {
       "id": "aeroway",
-      "source": "streets-v2",
+      "source": "osm",
       "source-layer": "aeroway",
       "type": "line",
       "metadata": {
@@ -279,6 +285,41 @@
           3, 0.5,
           10, 2
         ]
+      }
+    },
+    {
+      "id": "marine-label-point",
+      "source": "osm",
+      "source-layer": "natural_label",
+      "metadata": {
+          "taxonomy:group": "water-label",
+          "taxonomy:example": "Atlantic Ocean",
+          "taxonomy:matches": [
+            { "name": "ocean", "example": "Atlantic Ocean", "get:scalerank": 0 },
+            { "name": "strait", "example": "Strait of Gibraltar", "get:scalerank": 5 }
+          ]
+      },
+      "filter": [ "all", [ "==", "$type", "Point"], [ "in", "class", "ocean", "sea" ] ],
+      "type": "symbol",
+      "layout": {
+          "text-field": "name",
+          "text-font": [ "Noto Sans Regular" ],
+          "text-max-width": 6,
+          "text-size": [
+            "interpolate",
+            [ "linear" ],
+            [ "zoom" ],
+            1, 18,
+            6, [
+                "case",
+                [ "==", [ "get", "scalerank" ], 0 ], 28,
+                [ ">=", [ "get", "scalerank" ], 5 ], 18,
+                24
+              ]
+          ]
+      },
+      "paint": {
+          "text-color": "#87c6f8"
       }
     },
     {
