@@ -2,7 +2,6 @@ import {
   component
 } from 'riot'
 import Taxonomy from './tags/taxonomy.riot'
-import './style.css'
 
 const createApp = component(Taxonomy);
 
