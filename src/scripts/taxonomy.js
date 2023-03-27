@@ -380,6 +380,43 @@ class Taxonomy {
       'border-bottom-style:solid;'
     );
   }
+  searchMatches(exp, matches) {
+    if (exp[0] === 'match') {
+      let key = Array.isArray(exp[1]) ? exp[1].join(':') : exp[1];
+      for (let i = 1; i < exp.length - 2; i = i + 2) {
+          let name = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
+          if (!matches.find(m => m.name === name)) {
+            matches.push({ name, [key]: name })
+          }
+        
+      }
+    } else {
+      exp.filter(Array.isArray).forEach(e => this.searchMatches(e, matches))
+    }
+  }
+  autoGenerateMatches(layer) {
+    if (layer.metadata['taxonomy:matches'] || Array.isArray(layer.metadata['taxonomy:matches'])) {
+      return;
+    }
+    const matches = [];
+    layer.paint && Object.keys(layer.paint).forEach(key => {
+      if (Array.isArray(layer.paint[key])) {
+        this.searchMatches(layer.paint[key], matches)
+      }
+    })
+    layer.layout && Object.keys(layer.layout).forEach(key => {
+      if (Array.isArray(layer.layout[key])) {
+        this.searchMatches(layer.layout[key], matches)
+      }
+    })
+    if (matches.length > 0) {
+      Object.keys(matches[0]).filter(k => k !== 'name').forEach(k => {
+        matches.push({ name: `${layer.id}:default`, [k]:`${layer.id}:default`})
+      })
+      layer.metadata['taxonomy:matches'] = matches;
+    }
+    return matches;
+  }
 }
 
 export default new Taxonomy();

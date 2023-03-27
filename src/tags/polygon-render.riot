@@ -24,6 +24,7 @@
           }
           return false;
         }).reduce((acc, layer) => {
+          taxonomy.autoGenerateMatches(layer);
           if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
             acc.push(layer)
             return acc

@@ -3,13 +3,13 @@
   <div class="render-container">
     <div class="render-column" each="{ zoom in props.zooms }">
       <span class="render-header">{ zoom }</span>
-      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { getMinHeight(line) }px;">
+      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { state.minHeight }px;">
         <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(state.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"></canvas>
       </div>
     </div>
     <div class="render-column">
       <span class="render-header">id</span>
-      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { getMinHeight(line) }px;">
+      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { state.minHeight }px;">
         { line.id }
       </div>
     </div>
@@ -19,7 +19,8 @@
     export default {
       state: {
         casing: {},
-        lines: []
+        lines: [],
+        minHeight: 0,
       },
       onMounted() {
         this.state.casing = {};
@@ -32,6 +33,7 @@
           }
           return false;
         }).reduce((acc, layer) => {
+          taxonomy.autoGenerateMatches(layer);
           if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
             acc.push(layer)
             return acc
@@ -45,6 +47,7 @@
           res.id = layer.name || layer.id;
           return res;
         });
+        this.state.minHeight = this.state.lines.reduce((min, line) => Math.max(min, this.getMinHeight(line)), 0)
         this.update()
       },
       getMinHeight(line) {

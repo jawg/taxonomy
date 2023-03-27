@@ -7,7 +7,7 @@
     "format-html": "find src demo -name '*.html' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;",
     "format-js": "find src -name '*.js' -exec js-beautify --config .jsbeautifyrc -f {} --type js -r \\;",
     "format-riot": "find src -name '*.riot' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;",
-    "serve": "rollup -c rollup.serve.js -w",
+    "start": "rollup -c rollup.serve.js -w",
     "watch": "rollup -c -w"
   },
   "description": "Building a map taxonomy chart with style.json",
@@ -35,6 +35,5 @@
     "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^7.0.2",
     "webfontloader": "^1.6.28"
-  },
-  "dependencies": {}
+  }
 }

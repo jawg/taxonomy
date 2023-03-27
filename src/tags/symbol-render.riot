@@ -25,6 +25,7 @@
         this.state.symbols = this.props.layers.filter(layer => {
           return layer.metadata && layer.metadata['taxonomy:group'] === this.props.group && layer.type == 'symbol';
         }).reduce((acc, layer) => {
+          taxonomy.autoGenerateMatches(layer);
           if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
             acc.push(layer)
             return acc
