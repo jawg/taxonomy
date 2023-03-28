@@ -1,6 +1,6 @@
 {
   "name": "@jawg/taxonomy",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "scripts": {
     "build": "rollup -c",
     "format": "npm run format-html && npm run format-js && npm run format-riot",

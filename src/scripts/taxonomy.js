@@ -156,6 +156,19 @@ class Expressions {
         }
         return exp[exp.length - 1]
       }
+      case "step": {
+        let value = exp[1];
+        let res = exp[2]
+        if (value < exp[3]) {
+          return res;
+        }
+        for (let i = 3; i < exp.length; i = i + 2) {
+          if (exp[i] >= value) {
+            return exp[i + 1];
+          }
+        }
+        return res;
+      }
       case "coalesce":
         return exp.slice(1).find(e => e !== null && e !== undefined)
     }
@@ -380,18 +393,35 @@ class Taxonomy {
       'border-bottom-style:solid;'
     );
   }
-  searchMatches(exp, matches) {
+  searchMatches(exp, matches, layer) {
     if (exp[0] === 'match') {
       let key = Array.isArray(exp[1]) ? exp[1].join(':') : exp[1];
       for (let i = 1; i < exp.length - 2; i = i + 2) {
-          let name = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
-          if (!matches.find(m => m.name === name)) {
-            matches.push({ name, [key]: name })
-          }
-        
+        let name = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
+        if (!matches.find(m => m.name === name)) {
+          matches.push({ name, [key]: name })
+        }
+      }
+      let defaultName = `${layer.id}:default`;
+      if (!matches.find(m => m.name === defaultName)) {
+        matches.push({ name: defaultName, [key]: defaultName})
+      }
+    } else if (exp[0] === 'step') {
+      let key = Array.isArray(exp[1]) ? exp[1].join(':') : exp[1];
+      if (key === 'zoom') {
+        return;
+      }
+      if (!matches.find(m => m.name === `${layer.id}:0`)) {
+        matches.push({ name: `${layer.id}:0`, [key]: 0 })
+      }
+      for (let i = 2; i < exp.length - 2; i = i + 2) {
+        let value = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
+        if (!matches.find(m => m.name === `${layer.id}:${value}`)) {
+          matches.push({ name: `${layer.id}:${value}`, [key]: value })
+        }
       }
     } else {
-      exp.filter(Array.isArray).forEach(e => this.searchMatches(e, matches))
+      exp.filter(Array.isArray).forEach(e => this.searchMatches(e, matches, layer))
     }
   }
   autoGenerateMatches(layer) {
@@ -401,18 +431,15 @@ class Taxonomy {
     const matches = [];
     layer.paint && Object.keys(layer.paint).forEach(key => {
       if (Array.isArray(layer.paint[key])) {
-        this.searchMatches(layer.paint[key], matches)
+        this.searchMatches(layer.paint[key], matches, layer)
       }
     })
     layer.layout && Object.keys(layer.layout).forEach(key => {
       if (Array.isArray(layer.layout[key])) {
-        this.searchMatches(layer.layout[key], matches)
+        this.searchMatches(layer.layout[key], matches, layer)
       }
     })
     if (matches.length > 0) {
-      Object.keys(matches[0]).filter(k => k !== 'name').forEach(k => {
-        matches.push({ name: `${layer.id}:default`, [k]:`${layer.id}:default`})
-      })
       layer.metadata['taxonomy:matches'] = matches;
     }
     return matches;
