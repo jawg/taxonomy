@@ -3,19 +3,31 @@
   <div class="render-container">
     <div class="render-column" each="{ zoom in props.zooms }">
       <span class="render-header">{ zoom }</span>
-      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { state.minHeight }px;">
-        <canvas style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(state.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"></canvas>
+      <div
+        if="{ state.lines }"
+        each="{ line in state.lines }"
+        class="render-item"
+        style="min-height: { state.minHeight }px;"
+      >
+        <canvas
+          style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(state.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"
+        ></canvas>
       </div>
     </div>
     <div class="render-column">
       <span class="render-header">id</span>
-      <div if="{ state.lines }" each="{ line in state.lines }" class="render-item" style="min-height: { state.minHeight }px;">
+      <div
+        if="{ state.lines }"
+        each="{ line in state.lines }"
+        class="render-item"
+        style="min-height: { state.minHeight }px;"
+      >
         { line.id }
       </div>
     </div>
   </div>
   <script>
-    import taxonomy from '../scripts/taxonomy.js'
+    import taxonomy from '../scripts/taxonomy.js';
     export default {
       state: {
         casing: {},
@@ -24,37 +36,37 @@
       },
       onMounted() {
         this.state.casing = {};
-        this.state.lines = this.props.layers.filter(layer => {
-          if (layer.metadata && layer.metadata['taxonomy:group'] === this.props.group && (layer.type == 'line' || layer.ref)) {
-            if (!layer.metadata['taxonomy:casing'] && !layer.ref) {
-              return true;
+        this.state.lines = this.props.layers
+          .filter((layer) => {
+            if (
+              layer.metadata &&
+              layer.metadata['taxonomy:group'] === this.props.group &&
+              (layer.type == 'line' || layer.ref)
+            ) {
+              if (!layer.metadata['taxonomy:casing'] && !layer.ref) {
+                return true;
+              }
+              this.state.casing[layer.metadata['taxonomy:casing'] || layer.ref] = layer;
             }
-            this.state.casing[layer.metadata['taxonomy:casing'] || layer.ref] = layer;
-          }
-          return false;
-        }).reduce((acc, layer) => {
-          taxonomy.autoGenerateMatches(layer);
-          if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
-            acc.push(layer)
-            return acc
-          }
-          return acc.concat(taxonomy.renderMatches(layer, layer.metadata['taxonomy:matches']));
-        }, []).map(layer => {
-          if (this.state.casing[layer.id]) {
-            this.state.casing[layer.id] = taxonomy.renderLine(this.state.casing[layer.id], this.props.zooms);
-          }
-          const res = taxonomy.renderLine(layer, this.props.zooms);
-          res.id = layer.name || layer.id;
-          return res;
-        });
-        this.state.minHeight = this.state.lines.reduce((min, line) => Math.max(min, this.getMinHeight(line)), 0)
-        this.update()
+            return false;
+          })
+          .reduce(taxonomy.generateLayersWithMatches(), [])
+          .map((layer) => {
+            if (this.state.casing[layer.id]) {
+              this.state.casing[layer.id] = taxonomy.renderLine(this.state.casing[layer.id], this.props.zooms);
+            }
+            const res = taxonomy.renderLine(layer, this.props.zooms);
+            res.id = layer.name || layer.id;
+            return res;
+          });
+        this.state.minHeight = this.state.lines.reduce((min, line) => Math.max(min, this.getMinHeight(line)), 0);
+        this.update();
       },
       getMinHeight(line) {
         const res = 12 + line.maxWidth + (this.state.casing[line.id] ? this.state.casing[line.id].maxWidth : 0);
         return res > 25 ? res : 25;
       },
-      taxonomy
-    }
+      taxonomy,
+    };
   </script>
 </line-render>

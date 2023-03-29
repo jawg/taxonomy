@@ -4,31 +4,56 @@
       <h1>{ this.style.metadata['taxonomy:title'] }</h1>
     </div>
     <div class="taxonomy-item" each="{ group in this.style.metadata['taxonomy:groups'] }">
-      <line-render if="{ group.type === 'line' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></line-render>
-      <polygon-render if="{ group.type === 'polygon' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></polygon-render>
-      <symbol-render if="{ group.type === 'symbol' }" layers="{this.style.layers}" title="{ group.title }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></symbol-render>
-      <annotation if="{ group.type === 'annotation' }" layers="{this.style.layers}" content="{ group.content }" group="{ group.id }" zooms="{ taxonomy.getZooms(group.zooms) }"></annotation>
+      <line-render
+        if="{ group.type === 'line' }"
+        layers="{this.style.layers}"
+        title="{ group.title }"
+        group="{ group.id }"
+        zooms="{ taxonomy.getZooms(group.zooms) }"
+      ></line-render>
+      <polygon-render
+        if="{ group.type === 'polygon' }"
+        layers="{this.style.layers}"
+        title="{ group.title }"
+        group="{ group.id }"
+        zooms="{ taxonomy.getZooms(group.zooms) }"
+      ></polygon-render>
+      <symbol-render
+        if="{ group.type === 'symbol' }"
+        layers="{this.style.layers}"
+        title="{ group.title }"
+        group="{ group.id }"
+        zooms="{ taxonomy.getZooms(group.zooms) }"
+      ></symbol-render>
+      <annotation
+        if="{ group.type === 'annotation' }"
+        layers="{this.style.layers}"
+        content="{ group.content }"
+        group="{ group.id }"
+        zooms="{ taxonomy.getZooms(group.zooms) }"
+      ></annotation>
     </div>
     <div style="font-size: 12px; text-align: center">
-      Powered by <a href="https://www.jawg.io/">Jawg<span style="color: #2999fd">Maps</span></a>. Contribute on <a href="https://github.com/jawg/taxonomy/">GitHub</a>.
+      Powered by <a href="https://www.jawg.io/">Jawg<span style="color: #2999fd">Maps</span></a
+      >. Contribute on <a href="https://github.com/jawg/taxonomy/">GitHub</a>.
     </div>
   </div>
   <script>
-    import Annotation from './annotation.riot'
-    import LineRender from './line-render.riot'
-    import PolygonRender from './polygon-render.riot'
-    import SymbolRender from './symbol-render.riot'
-    import taxonomy from '../scripts/taxonomy.js'
+    import Annotation from './annotation.riot';
+    import LineRender from './line-render.riot';
+    import PolygonRender from './polygon-render.riot';
+    import SymbolRender from './symbol-render.riot';
+    import taxonomy from '../scripts/taxonomy.js';
     export default {
       components: {
         Annotation,
         LineRender,
         PolygonRender,
-        SymbolRender
+        SymbolRender,
       },
       fetchStyleURL(callback) {
         var req = new XMLHttpRequest();
-        req.addEventListener('load', function() {
+        req.addEventListener('load', function () {
           switch (this.status) {
             case 200:
               return callback(null, JSON.parse(this.responseText));
@@ -70,22 +95,22 @@
       onUpdated() {
         this.setBackgroundColor();
         taxonomy.fonts.download();
-        const hash = location && location.hash && location.hash.replace('#', '');
+        const hash = location && /^#[a-zA-Z0-9]/.test(location.hash) && location.hash;
         const hashElt = hash && this.$(hash);
         if (hashElt) {
           window.scrollTo({
             top: hashElt.offsetTop,
-            behavior: 'smooth'
-          })
+            behavior: 'smooth',
+          });
         }
       },
-      taxonomy
-    }
+      taxonomy,
+    };
   </script>
   <style>
     taxonomy {
       margin: auto;
-      font-family: "Roboto", Helvetica, Arial, sans-serif;
+      font-family: 'Roboto', Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 1em;
     }
@@ -105,7 +130,7 @@
       text-decoration: none;
     }
 
-    taxonomy>.container {
+    taxonomy > .container {
       min-height: 100%;
       min-width: 500px;
       padding: 0 30px;
@@ -136,8 +161,8 @@
       text-align: center;
     }
 
-    line-render .render-item>canvas,
-    polygon-render .render-item>* {
+    line-render .render-item > canvas,
+    polygon-render .render-item > * {
       margin: auto;
     }
 
@@ -161,7 +186,7 @@
         page-break-inside: avoid;
         break-inside: avoid;
       }
-      taxonomy .render-item>* {
+      taxonomy .render-item > * {
         page-break-inside: avoid;
         break-inside: avoid;
       }

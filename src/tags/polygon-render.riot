@@ -2,56 +2,59 @@
   <h2 id="{ props.group }">{ props.title }</h2>
   <div class="render-container">
     <div if="{ state.polygons }" each="{ polygon in state.polygons }" class="render-item">
-      <canvas style="width: 100px; height: 100px; background-color: { polygon.color }; { state.casing[polygon.id] ? 'border: ' + state.casing[polygon.id].width + 'px solid ' + state.casing[polygon.id].color + ';' : ''} opacity: { polygon.opacity };"></canvas>
+      <canvas
+        style="width: 100px; height: 100px; background-color: { polygon.color }; { state.casing[polygon.id] ? 'border: ' + state.casing[polygon.id].width + 'px solid ' + state.casing[polygon.id].color + ';' : ''} opacity: { polygon.opacity };"
+      ></canvas>
       <span>{ polygon.id }</span>
     </div>
   </div>
   <script>
-    import taxonomy from '../scripts/taxonomy.js'
+    import taxonomy from '../scripts/taxonomy.js';
+
     export default {
       state: {
         casing: {},
-        polygons: []
+        polygons: [],
       },
       onMounted() {
-        this.state.polygons = this.props.layers.filter(layer => {
-          if (layer.metadata && layer.metadata['taxonomy:group'] === this.props.group) {
-            if (layer.type == 'fill' && !layer.metadata['taxonomy:casing']) {
-              return true;
-            } else if (layer.type == 'line' && layer.metadata['taxonomy:casing']) {
-              this.state.casing[layer.metadata['taxonomy:casing']] = layer;
+        this.state.polygons = this.props.layers
+          .filter((layer) => {
+            if (layer.metadata && layer.metadata['taxonomy:group'] === this.props.group) {
+              if (layer.type == 'fill' && !layer.metadata['taxonomy:casing']) {
+                return true;
+              } else if (layer.type == 'line' && layer.metadata['taxonomy:casing']) {
+                this.state.casing[layer.metadata['taxonomy:casing']] = layer;
+              }
             }
-          }
-          return false;
-        }).reduce((acc, layer) => {
-          taxonomy.autoGenerateMatches(layer);
-          if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
-            acc.push(layer)
-            return acc
-          }
-          return acc.concat(taxonomy.renderMatches(layer, layer.metadata['taxonomy:matches']));
-        }, []).map(layer => {
-          if (this.state.casing[layer.id]) {
-            this.state.casing[layer.id] = {
-              color: taxonomy.parseColor(layer, this.state.casing[layer.id].paint['line-color'], this.props.zooms[0]),
-              width: taxonomy.parseNumber(layer, this.state.casing[layer.id].paint['line-width'], this.props.zooms[0]),
-              id: this.state.casing[layer.id].id
+            return false;
+          })
+          .reduce(taxonomy.generateLayersWithMatches(), [])
+          .map((layer) => {
+            if (this.state.casing[layer.id]) {
+              this.state.casing[layer.id] = {
+                color: taxonomy.parseColor(layer, this.state.casing[layer.id].paint['line-color'], this.props.zooms[0]),
+                width: taxonomy.parseNumber(
+                  layer,
+                  this.state.casing[layer.id].paint['line-width'],
+                  this.props.zooms[0]
+                ),
+                id: this.state.casing[layer.id].id,
+              };
+            } else if (layer.paint['fill-outline-color']) {
+              this.state.casing[layer.id] = {
+                color: taxonomy.parseColor(layer, layer.paint['fill-outline-color'], this.props.zooms[0]),
+                width: 1,
+                id: layer.id,
+              };
+            }
+            return {
+              color: taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
+              id: layer.name || layer.id,
+              opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0]),
             };
-          } else if (layer.paint['fill-outline-color']) {
-            this.state.casing[layer.id] = {
-              color: taxonomy.parseColor(layer, layer.paint['fill-outline-color'], this.props.zooms[0]),
-              width: 1,
-              id: layer.id
-            };
-          }
-          return {
-            color: taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
-            id: layer.name || layer.id,
-            opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0])
-          };
-        });
-        this.update()
-      }
-    }
+          });
+        this.update();
+      },
+    };
   </script>
 </polygon-render>

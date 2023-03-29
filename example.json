@@ -101,12 +101,7 @@
       "source-layer": "landuse",
       "type": "fill",
       "metadata": {
-        "taxonomy:group": "landcover",
-        "taxonomy:matches": [
-          { "name": "cemetery", "get:class": "cemetery" },
-          { "name": "hospital", "get:class": "hospital" },
-          { "name": "school", "get:class": "school" }
-        ]
+        "taxonomy:group": "landcover"
       },
       "filter": [ "in", "class", "cemetery", "hospital", "school" ],
       "paint": {
@@ -320,6 +315,39 @@
       },
       "paint": {
           "text-color": "#87c6f8"
+      }
+    },
+    {
+      "id": "marine-label-line",
+      "source": "osm",
+      "source-layer": "natural_label",
+      "metadata": {
+        "taxonomy:group": "water-label",
+        "taxonomy:example": "Caribbean Sea"
+      },
+      "filter": [ "all", [ "==", "$type", "LineString" ], [ "in", "class", "ocean", "sea" ] ],
+      "type": "symbol",
+      "layout": {
+        "symbol-placement": "line-center",
+        "text-field": "name",
+        "text-font": [ "Noto Sans Regular" ],
+        "text-max-width": 6.0,
+        "text-size": [
+          "interpolate",
+          [ "linear" ],
+          [ "zoom" ],
+          1, 18,
+          6, [
+              "step",
+              [ "get", "scalerank" ],
+              24,
+              1, 18,
+              5, 14
+            ]
+        ]
+      },
+      "paint": {
+        "text-color": "#87c6f8"
       }
     },
     {

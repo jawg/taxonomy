@@ -4,9 +4,9 @@
   "scripts": {
     "build": "rollup -c",
     "format": "npm run format-html && npm run format-js && npm run format-riot",
-    "format-html": "find src demo -name '*.html' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;",
-    "format-js": "find src -name '*.js' -exec js-beautify --config .jsbeautifyrc -f {} --type js -r \\;",
-    "format-riot": "find src -name '*.riot' -exec js-beautify --config .jsbeautifyrc -f {} --type html -r \\;",
+    "format-html": "find src demo -name '*.html' -exec prettier --config .prettierrc --parser html -w {} \\;",
+    "format-js": "prettier -w --config .prettierrc src/ rollup.*",
+    "format-riot": "find src -type f -name '*.riot' -exec prettier --config .prettierrc --parser html -w {} \\;",
     "start": "rollup -c rollup.serve.js -w",
     "watch": "rollup -c -w"
   },
@@ -26,7 +26,7 @@
     "@rollup/plugin-html": "^0.2.0",
     "@rollup/plugin-node-resolve": "^11.0.0",
     "color-operations-ui": "^1.1.0",
-    "js-beautify": "^1.13.0",
+    "prettier": "^2.8.7",
     "riot": "^5.1.1",
     "rollup": "^2.34.2",
     "rollup-plugin-app-utils": "^1.0.6",

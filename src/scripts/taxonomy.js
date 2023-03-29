@@ -1,240 +1,6 @@
-import WebFont from 'webfontloader';
 import colorConverter from 'color-operations-ui/src/scripts/color-converter.js';
-
-class Expressions {
-  constructor() {}
-  findStopLessThanOrEqualTo(stops, input) {
-    const n = stops.length;
-    var lowerIndex = 0;
-    var upperIndex = n - 1;
-    var currentIndex = 0;
-    var currentValue, upperValue;
-
-    while (lowerIndex <= upperIndex) {
-      currentIndex = Math.floor((lowerIndex + upperIndex) / 2);
-      currentValue = stops[currentIndex][0];
-      upperValue = stops[currentIndex + 1][0];
-      if (input === currentValue || (input > currentValue && input < upperValue)) {
-        // Search complete
-        return currentIndex;
-      } else if (currentValue < input) {
-        lowerIndex = currentIndex + 1;
-      } else if (currentValue > input) {
-        upperIndex = currentIndex - 1;
-      }
-    }
-    return Math.max(currentIndex - 1, 0);
-  }
-  interpolationFactor(input, base, lowerValue, upperValue) {
-    const difference = upperValue - lowerValue;
-    const progress = input - lowerValue;
-
-    if (difference === 0) {
-      return 0;
-    } else if (base === 1 || base === undefined) {
-      return progress / difference;
-    } else {
-      return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
-    }
-  }
-  number(a, b, t) {
-    return a * (1 - t) + b * t;
-  }
-  array(from, to, t) {
-    return from.map(function(d, i) {
-      return this.number(d, to[i], t);
-    });
-  }
-  asExpression(exp) {
-    if (Array.isArray(exp)) {
-      return exp
-    }
-    if (!exp.stops) {
-      throw new Error(`${JSON.stringify(exp)} is not a correct expression`)
-    }
-    if (exp.base === 1 || exp.base === undefined) {
-      return ["interpolate", ["linear"],
-        ["zoom"]
-      ].concat(exp.stops.reduce((acc, e) => acc.concat(e), []))
-    }
-    return ["interpolate", ["exponential", exp.base],
-      ["zoom"]
-    ].concat(exp.stops.reduce((acc, e) => acc.concat(e), []))
-  }
-  parseInterpolate(exp, value) {
-    if (!exp || exp[0] !== 'interpolate' || exp.length < 4) {
-      return null
-    }
-
-    const base = exp[1][0] === "exponential" ? exp[1][1] : 1
-    const stops = exp.slice(3).reduce((acc, e, i) => {
-      i % 2 === 0 ? acc.push([e]) : acc[acc.length - 1].push(e)
-      return acc
-    }, []);
-    if (stops.length === 1 || stops[0][0] >= value) {
-      return {
-        value: stops[0][1]
-      };
-    } else if (stops[stops.length - 1][0] <= value) {
-      return {
-        value: stops[stops.length - 1][1]
-      };
-    }
-    const index = this.findStopLessThanOrEqualTo(stops, value);
-    return {
-      lower: stops[index][1],
-      upper: stops[index + 1][1],
-      t: this.interpolationFactor(value, base, stops[index][0], stops[index + 1][0])
-    }
-  }
-  renderMatch(exp, match) {
-    if (!Array.isArray(exp)) {
-      return exp
-    }
-    return this.decision(exp.map(e => this.renderMatch(e, match)), match)
-  }
-  lookup(exp, match) {
-    if (!Array.isArray(exp)) {
-      return exp
-    }
-    switch (exp[0]) {
-      case 'at':
-        return this.lookup(exp[2], match)[exp[1]]
-      case 'get':
-      case 'has':
-      case '!has':
-        return match[`${exp[0]}:${exp[1]}`]
-      case 'in':
-        return this.lookup(exp[2], match).indexOf(exp[1]) >= 0
-      case '!in':
-        return this.lookup(exp[2], match).indexOf(exp[1]) < 0
-      case 'index-of':
-        return this.lookup(exp[2], match).indexOf(exp[1])
-      case 'length':
-        return this.lookup(exp[1], match).length
-      case 'slice':
-        return this.lookup(exp[1], match).slice(exp[2], exp[3])
-    }
-    return exp
-  }
-  decision(exp, match) {
-    if (!Array.isArray(exp)) {
-      return exp
-    }
-    switch (exp[0]) {
-      case "!":
-        return !this.lookup(exp[1], match);
-      case "==":
-        return this.lookup(exp[1], match) == exp[2];
-      case "!=":
-        return this.lookup(exp[1], match) != exp[2];
-      case ">":
-        return this.lookup(exp[1], match) > exp[2];
-      case "<":
-        return this.lookup(exp[1], match) < exp[2];
-      case ">=":
-        return this.lookup(exp[1], match) >= exp[2];
-      case "<=":
-        return this.lookup(exp[1], match) <= exp[2];
-      case "all":
-        return exp.slice(1).every(e => this.lookup(e, match) === true);
-      case "some":
-        return exp.slice(1).any(e => this.lookup(e, match) === true);
-      case "match": {
-        for (let i = 2; i < exp.length - 2; i = i + 2) {
-          if (exp[1] == exp[i] || (Array.isArray(exp[i]) && exp[1] == exp[i][0])) {
-            return exp[i + 1]
-          }
-        }
-        return exp[exp.length - 1]
-      }
-      case "case": {
-        for (let i = 1; i < exp.length - 2; i = i + 2) {
-          if (exp[i] === true) {
-            return exp[i + 1]
-          }
-        }
-        return exp[exp.length - 1]
-      }
-      case "step": {
-        let value = exp[1];
-        let res = exp[2]
-        if (value < exp[3]) {
-          return res;
-        }
-        for (let i = 3; i < exp.length; i = i + 2) {
-          if (exp[i] >= value) {
-            return exp[i + 1];
-          }
-        }
-        return res;
-      }
-      case "coalesce":
-        return exp.slice(1).find(e => e !== null && e !== undefined)
-    }
-    return this.lookup(exp, match)
-  }
-}
-
-class Fonts {
-  constructor() {
-    this._families = {};
-  }
-  getWeight(font) {
-    if (/extra(- )?light/i.test(font)) {
-      return 200;
-    } else if (/light/i.test(font)) {
-      return 300;
-    } else if (/semi(- )?bold/i.test(font)) {
-      return 600;
-    } else if (/bold/i.test(font)) {
-      return 700;
-    } else if (/black/i.test(font)) {
-      return 900;
-    }
-    return 400;
-  }
-  getStyle(font) {
-    if (/italic$/i.test(font)) {
-      return 'italic';
-    }
-    return 'normal';
-  }
-  getFamily(font) {
-    const family = font.split(/( black| bold| light| regular| semi[- ]?bold| extra[- ]?light| italic)/i);
-    if (family && family[0]) {
-      return family[0];
-    }
-    return '';
-  }
-  getProps(font) {
-    return {
-      family: this.getFamily(font),
-      style: this.getStyle(font),
-      weight: this.getWeight(font),
-    };
-  }
-  add(fontProps) {
-    this._families[fontProps.family] = this._families[fontProps.family] || [];
-    const type = fontProps.weight + (fontProps.style == 'italic' ? 'i' : '');
-    if (this._families[fontProps.family].indexOf(type) == -1) {
-      this._families[fontProps.family].push(type);
-    }
-  }
-  download() {
-    const families = [];
-    for (var i in this._families) {
-      families.push(i + ':' + this._families[i].join(','));
-    }
-    if (families.length > 0) {
-      WebFont.load({
-        google: {
-          families: families,
-        },
-      });
-    }
-  }
-}
+import { Expressions } from './expressions';
+import { Fonts } from './fonts';
 
 class Taxonomy {
   constructor() {
@@ -270,10 +36,10 @@ class Taxonomy {
     } else if (typeof width === 'number') {
       return width;
     }
-    const expression = this.expressions.asExpression(width)
-    const interpolate = this.expressions.parseInterpolate(expression, zoom)
+    const expression = this.expressions.asExpression(width);
+    const interpolate = this.expressions.parseInterpolate(expression, zoom);
     if (interpolate) {
-      if (interpolate.value) return interpolate.value
+      if (interpolate.value) return interpolate.value;
       return +this.expressions.number(interpolate.lower, interpolate.upper, interpolate.t).toFixed(2);
     }
   }
@@ -288,20 +54,20 @@ class Taxonomy {
     } else if (typeof color === 'string') {
       return color;
     }
-    const expression = this.expressions.asExpression(color)
-    const interpolate = this.expressions.parseInterpolate(expression, zoom)
+    const expression = this.expressions.asExpression(color);
+    const interpolate = this.expressions.parseInterpolate(expression, zoom);
     if (interpolate) {
-      if (interpolate.value) return interpolate.value
+      if (interpolate.value) return interpolate.value;
       const typeValueLower = colorConverter.getStringTypeAndValue(interpolate.lower);
       const typeValueUpper = colorConverter.getStringTypeAndValue(interpolate.upper);
       const outputLower =
-        typeValueLower.type === 'rgb' ?
-        typeValueLower.value :
-        colorConverter[typeValueLower.type].rgb(typeValueLower.value);
+        typeValueLower.type === 'rgb'
+          ? typeValueLower.value
+          : colorConverter[typeValueLower.type].rgb(typeValueLower.value);
       const outputUpper =
-        typeValueUpper.type === 'rgb' ?
-        typeValueUpper.value :
-        colorConverter[typeValueUpper.type].rgb(typeValueUpper.value);
+        typeValueUpper.type === 'rgb'
+          ? typeValueUpper.value
+          : colorConverter[typeValueUpper.type].rgb(typeValueUpper.value);
       return colorConverter.rgba.toString([
         this.expressions.number(outputLower[0], outputUpper[0], interpolate.t),
         this.expressions.number(outputLower[1], outputUpper[1], interpolate.t),
@@ -333,22 +99,22 @@ class Taxonomy {
     return line;
   }
   renderMatches(layer, matches) {
-    return matches.map(match => {
+    return matches.map((match) => {
       let newLayer = {
         id: layer.id,
         name: match.name,
         metadata: layer.metadata,
         paint: {},
-        layout: {}
+        layout: {},
       };
-      Object.keys(layer.paint || {}).forEach(key => {
-        newLayer.paint[key] = this.expressions.renderMatch(layer.paint[key], match)
-      })
-      Object.keys(layer.layout || {}).forEach(key => {
-        newLayer.layout[key] = this.expressions.renderMatch(layer.layout[key], match)
-      })
-      return newLayer
-    })
+      Object.keys(layer.paint || {}).forEach((key) => {
+        newLayer.paint[key] = this.expressions.renderMatch(layer.paint[key], match);
+      });
+      Object.keys(layer.layout || {}).forEach((key) => {
+        newLayer.layout[key] = this.expressions.renderMatch(layer.layout[key], match);
+      });
+      return newLayer;
+    });
   }
   widthAndColorByZooms(layer, props) {
     const color = props.color || '#000';
@@ -397,31 +163,31 @@ class Taxonomy {
     if (exp[0] === 'match') {
       let key = Array.isArray(exp[1]) ? exp[1].join(':') : exp[1];
       for (let i = 1; i < exp.length - 2; i = i + 2) {
-        let name = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
-        if (!matches.find(m => m.name === name)) {
-          matches.push({ name, [key]: name })
+        let name = Array.isArray(exp[i + 1]) ? exp[i + 1][0] : exp[i + 1];
+        if (!matches.find((m) => m.name === name)) {
+          matches.push({ name, [key]: name });
         }
       }
       let defaultName = `${layer.id}:default`;
-      if (!matches.find(m => m.name === defaultName)) {
-        matches.push({ name: defaultName, [key]: defaultName})
+      if (!matches.find((m) => m.name === defaultName)) {
+        matches.push({ name: defaultName, [key]: defaultName });
       }
     } else if (exp[0] === 'step') {
       let key = Array.isArray(exp[1]) ? exp[1].join(':') : exp[1];
       if (key === 'zoom') {
         return;
       }
-      if (!matches.find(m => m.name === `${layer.id}:0`)) {
-        matches.push({ name: `${layer.id}:0`, [key]: 0 })
+      if (!matches.find((m) => m.name === `${layer.id}:0`)) {
+        matches.push({ name: `${layer.id}:0`, [key]: 0 });
       }
       for (let i = 2; i < exp.length - 2; i = i + 2) {
-        let value = Array.isArray(exp[i+1]) ? exp[i+1][0] : exp[i+1];
-        if (!matches.find(m => m.name === `${layer.id}:${value}`)) {
-          matches.push({ name: `${layer.id}:${value}`, [key]: value })
+        let value = Array.isArray(exp[i + 1]) ? exp[i + 1][0] : exp[i + 1];
+        if (!matches.find((m) => m.name === `${layer.id}:${value}`)) {
+          matches.push({ name: `${layer.id}:${value}`, [key]: value });
         }
       }
     } else {
-      exp.filter(Array.isArray).forEach(e => this.searchMatches(e, matches, layer))
+      exp.filter(Array.isArray).forEach((e) => this.searchMatches(e, matches, layer));
     }
   }
   autoGenerateMatches(layer) {
@@ -429,20 +195,30 @@ class Taxonomy {
       return;
     }
     const matches = [];
-    layer.paint && Object.keys(layer.paint).forEach(key => {
+    Object.keys(layer.paint || {}).forEach((key) => {
       if (Array.isArray(layer.paint[key])) {
-        this.searchMatches(layer.paint[key], matches, layer)
+        this.searchMatches(layer.paint[key], matches, layer);
       }
-    })
-    layer.layout && Object.keys(layer.layout).forEach(key => {
+    });
+    Object.keys(layer.layout || {}).forEach((key) => {
       if (Array.isArray(layer.layout[key])) {
-        this.searchMatches(layer.layout[key], matches, layer)
+        this.searchMatches(layer.layout[key], matches, layer);
       }
-    })
+    });
     if (matches.length > 0) {
       layer.metadata['taxonomy:matches'] = matches;
     }
     return matches;
+  }
+  generateLayersWithMatches() {
+    return (acc, layer) => {
+      this.autoGenerateMatches(layer);
+      if (!layer.metadata['taxonomy:matches'] || layer.metadata['taxonomy:matches'].length < 1) {
+        acc.push(layer);
+        return acc;
+      }
+      return acc.concat(this.renderMatches(layer, layer.metadata['taxonomy:matches']));
+    };
   }
 }
 
