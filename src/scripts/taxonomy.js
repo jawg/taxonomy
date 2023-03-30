@@ -78,21 +78,21 @@ class Taxonomy {
   }
   renderLine(layer, zooms) {
     const line = this.widthAndColorByZooms(layer, {
-      width: layer.paint['line-width'],
-      color: layer.paint['line-color'],
+      'line-width': layer.paint['line-width'],
+      'line-color': layer.paint['line-color'],
       zooms: zooms,
-      opacity: layer.paint['line-opacity'],
+      'line-opacity': layer.paint['line-opacity'],
     });
     if (layer.paint['line-gap-width']) {
       const gap = this.widthAndColorByZooms(layer, {
-        width: layer.paint['line-gap-width'],
-        color: layer.paint['line-color'],
+        'line-width': layer.paint['line-gap-width'],
+        'line-color': layer.paint['line-color'],
         zooms: zooms,
-        opacity: layer.paint['line-opacity'],
+        'line-opacity': layer.paint['line-opacity'],
       });
       for (let zoom in gap) {
-        if (line[zoom] && typeof line[zoom].width === 'number') {
-          line[zoom].width += gap[zoom].width;
+        if (line[zoom] && typeof line[zoom]['line-width'] === 'number') {
+          line[zoom]['line-width'] += gap[zoom]['line-width'];
         }
       }
     }
@@ -117,9 +117,9 @@ class Taxonomy {
     });
   }
   widthAndColorByZooms(layer, props) {
-    const color = props.color || '#000';
-    const width = props.width || 1;
-    const opacity = props.opacity;
+    const color = props['line-color'] || '#000';
+    const width = props['line-width'] || 1;
+    const opacity = props['line-opacity'];
     const zooms = props.zooms || this.zooms;
     const res = {};
     res.maxWidth = 0;
@@ -130,34 +130,12 @@ class Taxonomy {
         res.maxWidth = parsedWidth;
       }
       res[zoom] = {
-        width: isNaN(parsedWidth) ? 0 : parsedWidth,
-        color: this.parseColor(layer, color, zoom),
-        opacity: this.parseNumber(layer, opacity, zoom),
+        'line-width': isNaN(parsedWidth) ? 0 : parsedWidth,
+        'line-color': this.parseColor(layer, color, zoom),
+        'line-opacity': this.parseNumber(layer, opacity, zoom),
       };
     });
     return res;
-  }
-  borderStyleFromCasing(casing, base, zoom) {
-    if (!casing || !base || !casing[zoom] || !base[zoom]) {
-      return '';
-    }
-    const width = Math.max((casing[zoom].width - base[zoom].width) / 2, 0);
-    return (
-      'border-top-width:' +
-      width +
-      'px;' +
-      'border-bottom-width:' +
-      width +
-      'px;' +
-      'border-top-color:' +
-      casing[zoom].color +
-      ';' +
-      'border-bottom-color:' +
-      casing[zoom].color +
-      ';' +
-      'border-top-style:solid;' +
-      'border-bottom-style:solid;'
-    );
   }
   searchMatches(exp, matches, layer) {
     if (exp[0] === 'match') {

@@ -1,5 +1,5 @@
 import { component } from 'riot';
-import Taxonomy from './tags/taxonomy.riot';
+import Taxonomy from './components/taxonomy.riot';
 
 const createApp = component(Taxonomy);
 

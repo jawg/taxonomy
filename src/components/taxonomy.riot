@@ -41,8 +41,8 @@
   <script>
     import Annotation from './annotation.riot';
     import LineRender from './line-render.riot';
-    import PolygonRender from './polygon-render.riot';
-    import SymbolRender from './symbol-render.riot';
+    import PolygonRender from '../tags/polygon-render.riot';
+    import SymbolRender from '../tags/symbol-render.riot';
     import taxonomy from '../scripts/taxonomy.js';
     export default {
       components: {
@@ -149,7 +149,7 @@
     }
 
     taxonomy .render-column,
-    taxonomy .render-item {
+    taxonomy render-item {
       padding: 0px;
       display: flex;
       flex-direction: column;
@@ -161,21 +161,21 @@
       text-align: center;
     }
 
-    line-render .render-item > canvas,
-    polygon-render .render-item > * {
+    line-render render-item > canvas,
+    polygon-render render-item > * {
       margin: auto;
     }
 
-    polygon-render .render-item {
+    polygon-render render-item {
       padding: 10px;
     }
 
-    line-render .render-item {
+    line-render render-item {
       padding: 0px 4px;
     }
 
-    line-render .render-item,
-    symbol-render .render-item {
+    line-render render-item,
+    symbol-render render-item {
       display: flex;
       align-items: center;
       flex-direction: row;
@@ -186,7 +186,7 @@
         page-break-inside: avoid;
         break-inside: avoid;
       }
-      taxonomy .render-item > * {
+      taxonomy render-item > * {
         page-break-inside: avoid;
         break-inside: avoid;
       }

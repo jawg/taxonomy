@@ -3,36 +3,33 @@
   <div class="render-container">
     <div class="render-column" each="{ zoom in props.zooms }">
       <span class="render-header">{ zoom }</span>
-      <div
+      <render-item
         if="{ state.lines }"
         each="{ line in state.lines }"
-        class="render-item"
-        style="min-height: { state.minHeight }px;"
-      >
-        <canvas
-          style="width: 55px; height: { line[zoom].width }px; background-color: { line[zoom].color }; {taxonomy.borderStyleFromCasing(state.casing[line.id], line, zoom)} opacity: { line[zoom].opacity };"
-        ></canvas>
-      </div>
+        type="canvas"
+        min-height="{ state.minHeight }"
+        style-props="{ lineStyleFormatter(line[zoom], state.casing[line.id] && state.casing[line.id][zoom]) }"
+      ></render-item>
     </div>
     <div class="render-column">
       <span class="render-header">id</span>
-      <div
-        if="{ state.lines }"
-        each="{ line in state.lines }"
-        class="render-item"
-        style="min-height: { state.minHeight }px;"
-      >
+      <render-item if="{ state.lines }" each="{ line in state.lines }" min-height="{ state.minHeight }">
         { line.id }
-      </div>
+      </render-item>
     </div>
   </div>
   <script>
     import taxonomy from '../scripts/taxonomy.js';
+    import renderItem from '../components/render-item.riot';
+    import { lineStyleFormatter } from '../scripts/style-to-css.js';
     export default {
       state: {
         casing: {},
         lines: [],
         minHeight: 0,
+      },
+      components: {
+        renderItem,
       },
       onMounted() {
         this.state.casing = {};
@@ -64,9 +61,10 @@
       },
       getMinHeight(line) {
         const res = 12 + line.maxWidth + (this.state.casing[line.id] ? this.state.casing[line.id].maxWidth : 0);
-        return res > 25 ? res : 25;
+        return Math.max(res, 25);
       },
       taxonomy,
+      lineStyleFormatter,
     };
   </script>
 </line-render>

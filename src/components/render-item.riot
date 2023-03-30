@@ -1,0 +1,24 @@
+<render-item>
+  <canvas if="{ props.type === 'canvas' }"></canvas>
+  <template if="{ props.type !== 'canvas' }">
+    <slot></slot>
+  </template>
+  <script>
+    export default {
+      onMounted(props) {
+        props.minHeight && (this.root.style['min-height'] = `${props.minHeight}px`);
+        const container = props.type === 'canvas' ? this.$('canvas') : this.$('span');
+        this.applyStyles(container, props.styleProps);
+      },
+      applyStyles(container, style) {
+        if (!container || !container.style || !style) {
+          return;
+        }
+        Object.entries(style).forEach(([k, v]) => {
+          container.style[k] = v;
+        });
+      },
+    };
+  </script>
+  <style></style>
+</render-item>

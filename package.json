@@ -1,6 +1,7 @@
 {
   "name": "@jawg/taxonomy",
   "version": "1.2.0",
+  "type": "module",
   "scripts": {
     "build": "rollup -c",
     "format": "npm run format-html && npm run format-js && npm run format-riot",
@@ -19,21 +20,21 @@
   "author": "Jawg Maps",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
-    "@rollup/plugin-babel": "^5.2.2",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-html": "^0.2.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@babel/core": "^7.21.3",
+    "@babel/preset-env": "^7.20.2",
+    "@rollup/plugin-babel": "^6.0.3",
+    "@rollup/plugin-commonjs": "^24.0.1",
+    "@rollup/plugin-html": "^1.0.2",
+    "@rollup/plugin-node-resolve": "^15.0.1",
+    "@rollup/plugin-terser": "^0.4.0",
     "color-operations-ui": "^1.1.0",
     "prettier": "^2.8.7",
-    "riot": "^5.1.1",
-    "rollup": "^2.34.2",
+    "riot": "^7.1.0",
+    "rollup": "^3.20.2",
     "rollup-plugin-app-utils": "^1.0.6",
     "rollup-plugin-commonjs": "^10.1.0",
-    "rollup-plugin-riot": "^5.0.0",
-    "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-riot": "^6.0.0",
+    "rollup-plugin-serve": "^2.0.2",
     "webfontloader": "^1.6.28"
   }
 }
