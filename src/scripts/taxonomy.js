@@ -116,10 +116,10 @@ class Taxonomy {
       return newLayer;
     });
   }
-  widthAndColorByZooms(layer, props) {
-    const color = props['line-color'] || '#000';
-    const width = props['line-width'] || 1;
-    const opacity = props['line-opacity'];
+  widthAndColorByZooms(layer, props, type = 'line') {
+    const color = props[`${type}-color`] || '#000';
+    const width = props[`${type}-width`] || 1;
+    const opacity = props[`${type}-opacity`];
     const zooms = props.zooms || this.zooms;
     const res = {};
     res.maxWidth = 0;
@@ -130,9 +130,9 @@ class Taxonomy {
         res.maxWidth = parsedWidth;
       }
       res[zoom] = {
-        'line-width': isNaN(parsedWidth) ? 0 : parsedWidth,
-        'line-color': this.parseColor(layer, color, zoom),
-        'line-opacity': this.parseNumber(layer, opacity, zoom),
+        [`${type}-width`]: isNaN(parsedWidth) ? 0 : parsedWidth,
+        [`${type}-color`]: this.parseColor(layer, color, zoom),
+        [`${type}-opacity`]: this.parseNumber(layer, opacity, zoom),
       };
     });
     return res;

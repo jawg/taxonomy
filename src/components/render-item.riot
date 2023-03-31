@@ -1,8 +1,6 @@
 <render-item>
   <canvas if="{ props.type === 'canvas' }"></canvas>
-  <template if="{ props.type !== 'canvas' }">
-    <slot></slot>
-  </template>
+  <slot></slot>
   <script>
     export default {
       onMounted(props) {

@@ -3,36 +3,38 @@
   <div class="render-container">
     <div class="render-column" each="{ zoom in this.props.zooms }">
       <span class="render-header">{ zoom }</span>
-      <div
+      <render-item
         if="{ state.symbols }"
         each="{ symbol in state.symbols }"
-        class="render-item"
-        style="min-height: { getMinHeight(symbol) }px;"
+        min-height="{ getMinHeight(symbol) }"
+        style-props="{ symbolStyleFormatter(symbol[zoom], symbol.fontProps, state.casing[symbol.id] && state.casing[symbol.id][zoom]) }"
       >
-        <span
-          style="font-size: { symbol[zoom].width }px; color: { symbol[zoom].color }; { state.casing[symbol.id] && state.casing[symbol.id][zoom] ? 'text-shadow: 0 0 ' + state.casing[symbol.id][zoom].width + 'px ' + state.casing[symbol.id][zoom].color + ';' : ''} { symbol.fontStyle } text-transform: { symbol['text-transform'] };"
-          >{ symbol.example || symbol.id }</span
-        >
-      </div>
+        <span>{ symbol.example || symbol.id }</span>
+      </render-item>
     </div>
     <div class="render-column">
       <span class="render-header">id</span>
-      <div
+      <render-item
         if="{ state.symbols }"
         each="{ symbol in state.symbols }"
-        class="render-item"
-        style="min-height: { getMinHeight(symbol) }px;"
+        min-height="{ getMinHeight(symbol) }"
       >
-        { symbol.id }
-      </div>
+        <span>{ symbol.id }</span>
+      </render-item>
     </div>
   </div>
   <script>
     import taxonomy from '../scripts/taxonomy.js';
+    import renderItem from './render-item.riot';
+    import { symbolStyleFormatter } from '../scripts/style-to-css.js';
+
     export default {
       state: {
         casing: {},
         symbols: [],
+      },
+      components: {
+        renderItem,
       },
       onMounted() {
         this.state.symbols = this.props.layers
@@ -43,35 +45,31 @@
           .map((layer) => {
             if (layer.paint['text-halo-color']) {
               this.state.casing[layer.id] = taxonomy.widthAndColorByZooms(layer, {
-                width: layer.paint['text-halo-width'],
-                color: layer.paint['text-halo-color'],
+                'text-width': layer.paint['text-halo-width'],
+                'text-color': layer.paint['text-halo-color'],
                 zooms: this.props.zooms,
-              });
+              }, 'text');
             }
             const res = taxonomy.widthAndColorByZooms(layer, {
-              width: layer.layout['text-size'],
-              color: layer.paint['text-color'],
+              'text-width': layer.layout['text-size'],
+              'text-color': layer.paint['text-color'],
               zooms: this.props.zooms,
-            });
+            }, 'text');
             res.id = layer.name || layer.id;
             res['text-transform'] = layer.layout['text-transform'] || 'none';
             res.example = layer.metadata['taxonomy:example'];
             const fontProps = taxonomy.fonts.getProps(layer.layout['text-font'][0]);
-            res.fontStyle = this.fontPropsToStyle(fontProps);
+            res.fontProps = fontProps;
             taxonomy.fonts.add(fontProps);
-            return res;
+            return {fontProps, ...res};
           });
         this.update();
-      },
-      fontPropsToStyle(props) {
-        return (
-          'font-style: ' + props.style + '; font-weight: ' + props.weight + "; font-family: '" + props.family + "';"
-        );
       },
       getMinHeight(symbol) {
         const res = 8 + symbol.maxWidth + (this.state.casing[symbol.id] ? this.state.casing[symbol.id].maxWidth : 0);
         return res > 25 ? res : 25;
       },
+      symbolStyleFormatter,
     };
   </script>
 </symbol-render>

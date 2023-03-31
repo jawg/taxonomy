@@ -1,20 +1,28 @@
 <polygon-render>
   <h2 id="{ props.group }">{ props.title }</h2>
   <div class="render-container">
-    <div if="{ state.polygons }" each="{ polygon in state.polygons }" class="render-item">
-      <canvas
-        style="width: 100px; height: 100px; background-color: { polygon.color }; { state.casing[polygon.id] ? 'border: ' + state.casing[polygon.id].width + 'px solid ' + state.casing[polygon.id].color + ';' : ''} opacity: { polygon.opacity };"
-      ></canvas>
+    <render-item
+      if="{ state.polygons }"
+      each="{ polygon in state.polygons }"
+      type="canvas"
+      min-height="{ state.minHeight }"
+      style-props="{ polygonStyleFormatter(polygon, state.casing[polygon.id]) }"
+    >
       <span>{ polygon.id }</span>
-    </div>
+    </render-item>
   </div>
   <script>
     import taxonomy from '../scripts/taxonomy.js';
+    import renderItem from './render-item.riot';
+    import { polygonStyleFormatter } from '../scripts/style-to-css.js';
 
     export default {
       state: {
         casing: {},
         polygons: [],
+      },
+      components: {
+        renderItem,
       },
       onMounted() {
         this.state.polygons = this.props.layers
@@ -32,8 +40,12 @@
           .map((layer) => {
             if (this.state.casing[layer.id]) {
               this.state.casing[layer.id] = {
-                color: taxonomy.parseColor(layer, this.state.casing[layer.id].paint['line-color'], this.props.zooms[0]),
-                width: taxonomy.parseNumber(
+                'line-color': taxonomy.parseColor(
+                  layer,
+                  this.state.casing[layer.id].paint['line-color'],
+                  this.props.zooms[0]
+                ),
+                'line-width': taxonomy.parseNumber(
                   layer,
                   this.state.casing[layer.id].paint['line-width'],
                   this.props.zooms[0]
@@ -42,19 +54,20 @@
               };
             } else if (layer.paint['fill-outline-color']) {
               this.state.casing[layer.id] = {
-                color: taxonomy.parseColor(layer, layer.paint['fill-outline-color'], this.props.zooms[0]),
-                width: 1,
+                'line-color': taxonomy.parseColor(layer, layer.paint['fill-outline-color'], this.props.zooms[0]),
+                'line-width': 1,
                 id: layer.id,
               };
             }
             return {
-              color: taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
+              'fill-color': taxonomy.parseColor(layer, layer.paint['fill-color'], this.props.zooms[0]),
               id: layer.name || layer.id,
-              opacity: taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0]),
+              'fill-opacity': taxonomy.parseNumber(layer, layer.paint['fill-opacity'], this.props.zooms[0]),
             };
           });
         this.update();
       },
+      polygonStyleFormatter,
     };
   </script>
 </polygon-render>
