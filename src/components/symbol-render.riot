@@ -14,11 +14,7 @@
     </div>
     <div class="render-column">
       <span class="render-header">id</span>
-      <render-item
-        if="{ state.symbols }"
-        each="{ symbol in state.symbols }"
-        min-height="{ getMinHeight(symbol) }"
-      >
+      <render-item if="{ state.symbols }" each="{ symbol in state.symbols }" min-height="{ getMinHeight(symbol) }">
         <span>{ symbol.id }</span>
       </render-item>
     </div>
@@ -44,24 +40,32 @@
           .reduce(taxonomy.generateLayersWithMatches(), [])
           .map((layer) => {
             if (layer.paint['text-halo-color']) {
-              this.state.casing[layer.id] = taxonomy.widthAndColorByZooms(layer, {
-                'text-width': layer.paint['text-halo-width'],
-                'text-color': layer.paint['text-halo-color'],
-                zooms: this.props.zooms,
-              }, 'text');
+              this.state.casing[layer.id] = taxonomy.widthAndColorByZooms(
+                layer,
+                {
+                  'text-width': layer.paint['text-halo-width'],
+                  'text-color': layer.paint['text-halo-color'],
+                  zooms: this.props.zooms,
+                },
+                'text'
+              );
             }
-            const res = taxonomy.widthAndColorByZooms(layer, {
-              'text-width': layer.layout['text-size'],
-              'text-color': layer.paint['text-color'],
-              zooms: this.props.zooms,
-            }, 'text');
+            const res = taxonomy.widthAndColorByZooms(
+              layer,
+              {
+                'text-width': layer.layout['text-size'],
+                'text-color': layer.paint['text-color'],
+                zooms: this.props.zooms,
+              },
+              'text'
+            );
             res.id = layer.name || layer.id;
             res['text-transform'] = layer.layout['text-transform'] || 'none';
             res.example = layer.metadata['taxonomy:example'];
             const fontProps = taxonomy.fonts.getProps(layer.layout['text-font'][0]);
             res.fontProps = fontProps;
             taxonomy.fonts.add(fontProps);
-            return {fontProps, ...res};
+            return res;
           });
         this.update();
       },
