@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags: ['*']
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        registry-url: 'https://registry.npmjs.org'
+        scope: '@jawg'
+    - run: npm install
+    - run: npm run build
+    - run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_JS_ACCESS_TOKEN }}
+    - name: Download kokai
+      run: curl -sSL https://github.com/Joxit/kokai/releases/download/$(curl -sSL https://api.github.com/repos/Joxit/kokai/releases/latest | jq -r ".tag_name")/kokai-linux-x86_64 > kokai
+    - name: Create Release Note
+      run: chmod +x kokai && ./kokai release --ref ${{ github.ref }} --tag-from-ref . > RELEASE_NOTE.md
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        body_path: RELEASE_NOTE.md
+        draft: false
+        prerelease: false
