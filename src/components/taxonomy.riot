@@ -1,5 +1,6 @@
 <taxonomy>
   <div if="{ this.style && this.style.metadata }" class="container">
+    <div class="background-color"><code>background-color</code>: <code>{state.backgroundColor}</code></div>
     <div if="{ this.style.metadata['taxonomy:title'] }" class="taxonomy-item">
       <h1>{ this.style.metadata['taxonomy:title'] }</h1>
     </div>
@@ -69,12 +70,11 @@
         req.send();
       },
 
-      setBackgroundColor() {
-        var layers = this.style.layers;
+      getBackgroundColor(style) {
+        var layers = style.layers;
         for (var i in layers) {
           if (layers[i].type === 'background') {
-            this.$('.container').style['background-color'] = layers[i].paint['background-color'] || '#fff';
-            return;
+            return layers[i].paint['background-color'];
           }
         }
       },
@@ -88,12 +88,13 @@
             return console.error('Error in fetch style');
           }
           this.style = res;
-          this.update();
+          let backgroundColor = this.getBackgroundColor(res) || '#fff';
+          this.update({ backgroundColor });
         });
       },
 
-      onUpdated() {
-        this.setBackgroundColor();
+      onUpdated(props, states) {
+        this.$('.container').style['background-color'] = states.backgroundColor;
         taxonomy.fonts.download();
         const hash = location && /^#[a-zA-Z0-9]/.test(location.hash) && location.hash;
         const hashElt = hash && this.$(hash);
@@ -113,6 +114,19 @@
       font-family: 'Roboto', Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 1em;
+    }
+
+    taxonomy .background-color {
+      top: 0;
+      left: 0;
+      padding-top: 0.5em;
+    }
+
+    code {
+      padding: 0.25em 0.5em;
+      border-radius: 0.5em;
+      line-height: 2em;
+      background-color: #eee;
     }
 
     taxonomy h1 {

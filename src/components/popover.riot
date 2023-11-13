@@ -1,0 +1,48 @@
+<popover>
+  <div class="popover-wrapper" if="{ props.opened }">
+    <div class="popover-dialog" onclick="{ (e) => e.stopPropagation() }">
+      <div class="popover-body">
+        <div each="{ style in Object.keys(props.styleProps) }">
+          <template if="{ props.styleProps[style] }"> { style }: <code>{ props.styleProps[style] }</code> </template>
+        </div>
+      </div>
+    </div>
+  </div>
+  <slot></slot>
+  <style>
+    :host {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .popover-wrapper {
+      position: relative;
+    }
+    .popover-dialog {
+      position: absolute;
+      min-width: 10rem;
+      bottom: 0;
+      transform: translateX(-50%);
+      cursor: default;
+    }
+    .popover-dialog::after {
+      position: absolute;
+      display: block;
+      content: '';
+      border-color: transparent;
+      border-style: solid;
+      border-width: 0.5rem 0.5rem 0;
+      left: calc(50% - 0.25rem);
+      bottom: 0;
+      border-top-color: #fff;
+    }
+    .popover-body {
+      font-size: 0.75rem;
+      margin-bottom: 0.5rem;
+      background-color: #fff;
+      padding: 0.5rem;
+      border-radius: 0.5rem 0.75rem;
+      box-shadow: 0 2px 4px rgb(0 0 0 / 20%), 0 -1px 0 rgb(0 0 0 / 2%);
+    }
+  </style>
+</popover>

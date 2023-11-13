@@ -1,12 +1,19 @@
-<render-item>
-  <canvas if="{ props.type === 'canvas' }"></canvas>
-  <slot></slot>
+<render-item onclick="{ onClick }">
+  <popover opened="{ this.state.popover }" style-props="{ props.styleProps }">
+    <canvas if="{ props.type === 'canvas' }"></canvas>
+    <slot></slot>
+  </popover>
   <script>
+    import popover from './popover.riot';
     export default {
+      components: { popover },
       onMounted(props) {
         props.minHeight && (this.root.style['min-height'] = `${props.minHeight}px`);
         const container = props.type === 'canvas' ? this.$('canvas') : this.$('span');
         this.applyStyles(container, props.styleProps);
+      },
+      onClick(e) {
+        this.update({ popover: !this.state.popover });
       },
       applyStyles(container, style) {
         if (!container || !container.style || !style) {
@@ -18,5 +25,9 @@
       },
     };
   </script>
-  <style></style>
+  <style>
+    :host {
+      cursor: pointer;
+    }
+  </style>
 </render-item>
