@@ -1,7 +1,7 @@
 <popover>
   <div class="popover-wrapper" if="{ props.opened }">
-    <div class="popover-dialog" onclick="{ (e) => e.stopPropagation() }">
-      <div class="popover-body">
+    <div class="popover-dialog">
+      <div class="popover-body" onclick="{ (e) => e.stopPropagation() }">
         <div each="{ style in Object.keys(props.styleProps) }">
           <template if="{ props.styleProps[style] }"> { style }: <code>{ props.styleProps[style] }</code> </template>
         </div>
@@ -23,7 +23,6 @@
       min-width: 10rem;
       bottom: 0;
       transform: translateX(-50%);
-      cursor: default;
     }
     .popover-dialog::after {
       position: absolute;
@@ -43,6 +42,7 @@
       padding: 0.5rem;
       border-radius: 0.5rem 0.75rem;
       box-shadow: 0 2px 4px rgb(0 0 0 / 20%), 0 -1px 0 rgb(0 0 0 / 2%);
+      cursor: default;
     }
   </style>
 </popover>
