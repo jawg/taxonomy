@@ -1,5 +1,5 @@
 <render-item onclick="{ onClick }">
-  <popover opened="{ this.state.popover }" style-props="{ props.styleProps }">
+  <popover onClose="{ onClose }" opened="{ this.state.popover }" style-props="{ props.styleProps }">
     <canvas if="{ props.type === 'canvas' }"></canvas>
     <slot></slot>
   </popover>
@@ -14,6 +14,10 @@
       },
       onClick(e) {
         this.update({ popover: !this.state.popover });
+      },
+      onClose(e) {
+        this.update({ popover: false });
+        e.stopPropagation();
       },
       applyStyles(container, style) {
         if (!container || !container.style || !style) {
