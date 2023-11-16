@@ -9,12 +9,31 @@
           </svg>
         </div>
         <div each="{ style in Object.keys(props.styleProps) }">
-          <template if="{ props.styleProps[style] }"> { style }: <code>{ props.styleProps[style] }</code> </template>
+          <template if="{ props.styleProps[style] }">
+            { style }: <code>{ props.styleProps[style] }</code>
+            <span if="{ style.indexOf('color') > -1}" class="popover-color" color="{ props.styleProps[style] }"></span>
+          </template>
         </div>
       </div>
     </div>
   </div>
   <slot></slot>
+  <script>
+    export default {
+      updateColors(props, state) {
+        let elts = this.$$('.popover-color');
+        for (let idx in elts) {
+          elts[idx].style['background-color'] = elts[idx].getAttribute('color');
+        }
+      },
+      onMounted(props, state) {
+        this.updateColors(props, state);
+      },
+      onUpdated(props, state) {
+        this.updateColors(props, state);
+      },
+    };
+  </script>
   <style>
     :host {
       display: flex;
@@ -62,6 +81,17 @@
     }
     .popover-close:hover {
       background-color: rgba(0, 0, 0, 0.1);
+    }
+    .popover-color {
+      display: inline-block;
+      border-radius: 50%;
+      border: solid 1px rgba(0, 0, 0, 0.2);
+      line-height: 0;
+      margin: auto;
+      margin-left: 0.5rem;
+      width: 0.8rem;
+      height: 0.8rem;
+      background-color: #fff;
     }
   </style>
 </popover>
