@@ -10,7 +10,7 @@
         </div>
         <div each="{ style in Object.keys(props.styleProps) }">
           <template if="{ props.styleProps[style] }">
-            { style }: <code>{ props.styleProps[style] }</code>
+            { style }: <code onclick="{ copyToClipboard }">{ props.styleProps[style] }</code>
             <span if="{ style.indexOf('color') > -1}" class="popover-color" color="{ props.styleProps[style] }"></span>
           </template>
         </div>
@@ -31,6 +31,13 @@
       },
       onUpdated(props, state) {
         this.updateColors(props, state);
+      },
+      copyToClipboard(e) {
+        navigator.clipboard.writeText(e.target.innerHTML);
+        e.target.style['background-color'] = '#8bc34a';
+        setTimeout(() => {
+          e.target.style['background-color'] = null;
+        }, 4000);
       },
     };
   </script>
@@ -92,6 +99,10 @@
       width: 0.8rem;
       height: 0.8rem;
       background-color: #fff;
+    }
+    code {
+      cursor: pointer;
+      transition: background-color 0.5s ease-out;
     }
   </style>
 </popover>
