@@ -1,5 +1,5 @@
 <popover>
-  <div class="popover-wrapper" if="{ props.opened }">
+  <div class="popover-wrapper" if="{ props.opened && props.styleProps }">
     <div class="popover-dialog">
       <div class="popover-body" onclick="{ (e) => e.stopPropagation() }">
         <div class="popover-close" onclick="{ props.onClose }">

@@ -14,7 +14,7 @@
     <div class="render-column">
       <span class="render-header">id</span>
       <render-item if="{ state.lines }" each="{ line in state.lines }" min-height="{ state.minHeight }">
-        { line.id }
+        <span class="render-header">{ line.id }</span>
       </render-item>
     </div>
   </div>

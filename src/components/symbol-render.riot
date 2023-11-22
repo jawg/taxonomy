@@ -15,7 +15,7 @@
     <div class="render-column">
       <span class="render-header">id</span>
       <render-item if="{ state.symbols }" each="{ symbol in state.symbols }" min-height="{ getMinHeight(symbol) }">
-        <span>{ symbol.id }</span>
+        <span class="render-header">{ symbol.id }</span>
       </render-item>
     </div>
   </div>
