@@ -34,9 +34,9 @@
         zooms="{ taxonomy.getZooms(group.zooms) }"
       ></annotation>
     </div>
-    <div style="font-size: 12px; text-align: center; background-color: rgba(255,255,255, 0.2);">
+    <div style="font-size: 12px; text-align: center; background-color: rgba(255, 255, 255, 0.2)">
       Powered by <a href="https://www.jawg.io/">Jawg<span style="color: #2999fd">Maps</span></a
-      >. Contribute on <a href="https://github.com/jawg/taxonomy/">GitHub</a>.
+      >. Contribute on <a href="https://github.com/jawg/taxonomy/">GitHub</a>. <a href="https://github.com/jawg/taxonomy/releases/tag/{version}">v{version}</a>
     </div>
   </div>
   <script>
@@ -45,6 +45,7 @@
     import PolygonRender from './polygon-render.riot';
     import SymbolRender from './symbol-render.riot';
     import taxonomy from '../scripts/taxonomy.js';
+    import { version } from '../../package.json';
     export default {
       components: {
         Annotation,
@@ -106,6 +107,7 @@
         }
       },
       taxonomy,
+      version,
     };
   </script>
   <style>
@@ -137,7 +139,7 @@
     taxonomy h2 {
       line-height: 1.5;
       text-align: center;
-      background-color: rgba(255,255,255, 0.2);
+      background-color: rgba(255, 255, 255, 0.2);
     }
 
     taxonomy a {
@@ -174,7 +176,7 @@
     taxonomy span.render-header {
       font-weight: bold;
       text-align: center;
-      background-color: rgba(255,255,255, 0.2);
+      background-color: rgba(255, 255, 255, 0.2);
       border-radius: 1rem;
       padding: 0 0.5em;
       margin: 0 0.5em;

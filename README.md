@@ -89,7 +89,7 @@ You can add your taxonomy chart in your website or blog by using this code in yo
 #### `taxonomy:groups`
 
 -   `taxonomy:title`: This is the title that will be displayed on the top of your taxonomy.
--   `taxonomy:groups`: This a array of object in your style `metadata`. `Required`
+-   `taxonomy:groups`: This an array of objects in your style `metadata`. `Required`
     -   `id`: This is the identifier for your taxonomy group. This will be use for your layer grouping. `Required`.
     -   `type`: This is the type of your style object. This is use for the taxonomy rendering. One of `line`, `polygon`, `symbol` and `annotation`. `Required`.
     -   `title`: This is the title that will be displayed for your taxonomy group.
@@ -108,7 +108,10 @@ You can add your taxonomy chart in your website or blog by using this code in yo
   "metadata": {
     "taxonomy:group": "taxonomy-groups-id",
     "taxonomy:casing": "layer-for-casing",
-    "taxonomy:example": "Example for symbols"
+    "taxonomy:example": "Example for symbols",
+    "taxonomy:matches": [
+      { "name": "meta-layer-name", "get:class": "value-from-tile", "example": "Example for symbols" }
+    ]
   }
 }
 ```
@@ -117,6 +120,11 @@ You can add your taxonomy chart in your website or blog by using this code in yo
     `Required`.
 -   `taxonomy:casing`: This will refer to another layer id. That's mean the current layer is the casing of the layer pointed by `taxonomy:casing`. This layer must be a line type. This will render an outline for `taxonomy:casing` (We can also use `ref` id from your layer).
 -   `taxonomy:example`: This is a text example for symbols groups. Default text is layer id.
+-   `taxonomy:matches`: This is an array of objects that will process a `match` or `case` expression.
+    -   `name`: The name or title to display for this example.
+    -   `example`: The text to display if it's a symbol.
+    -   `[expression]:[key]`: The value to return when this expression is found, this should be a value that can be found in your tile. You can add many expressions.
+        -   Example `{"name": "Green Grass", "get:class": "grass"}` will display Green Grass and replace occurences of `["get", "class"]` by `grass`.
 
 ### Concrete example
 
